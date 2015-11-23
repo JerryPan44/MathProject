@@ -1,0 +1,26 @@
+#ifndef _SYLVESTER_POLYNOMIAL_
+#define _SYLVESTER_POLYNOMIAL_
+
+#include "SylvesterMatrix.h"
+#include "Matrix.h"
+#include "eigen/Eigen/Dense"
+#include "eigen/Eigen/Core"
+#include "eigen/Eigen/SVD"
+class SylvesterPolynomial
+{
+    unsigned int degree, matrixDimensions;
+    MyMatrix ** polynomial;
+public:
+    SylvesterPolynomial(int deg, int dimensions);
+    void AssignPolynomial(int, Polynomial *** );
+    bool SMatrixToSPolynomial(SylvesterMatrix * SM);
+    void Print();
+    void initMd(Eigen::MatrixXd & Md);
+    double getStateIndicator(Eigen::MatrixXd&);
+    unsigned int getMatrixDimensions()
+    {
+	return this->matrixDimensions;	
+    }
+};
+
+#endif
