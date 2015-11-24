@@ -3,6 +3,7 @@
 #include "BivariatePolynomial.h"
 #include "Polynomial.h"
 #include "Matrix.h"
+#include "ChangeOfVariableCoefficients.h"
 
 
 class SylvesterMatrix
@@ -18,7 +19,12 @@ class SylvesterMatrix
     void initMatrixWithHiddenY(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2);
     void cleanPowerUps(Polynomial **&, int);
 public:
+    ChangeOfVariableCoefficients * coefs;
     static bool initPowerUps(Polynomial **& ,  int * , int, int);
+    ChangeOfVariableCoefficients * getCoefs()
+    {
+        return this->coefs;
+    }
     int getHiddenDeg()
     {
         return hiddenDeg;
@@ -43,7 +49,7 @@ public:
     SylvesterMatrix(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2);
     SylvesterMatrix(Polynomial ***, unsigned int, unsigned int);
     SylvesterMatrix(SylvesterMatrix & SM);
-    bool changeOfVariableBody(int, int ,int ,int);
+    bool changeOfVariableBody();
     void allocMatrix();
     bool changeOfVariable();
     void Print();

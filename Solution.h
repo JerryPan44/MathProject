@@ -11,6 +11,18 @@ public:
     {
 
     }
+    double getX()
+    {
+        return x;
+    }
+    double getY()
+    {
+        return y;
+    }
+    int getMultiplicity()
+    {
+        return this->multiplicity;
+    }
     void PrintSolution();
 };
 

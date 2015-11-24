@@ -1,6 +1,7 @@
 #include "../../SylvesterMatrix.h"
 #include "../../Polynomial.h"
 #include "../../BivariatePolynomial.h"
+#include "../../ChangeOfVariableCoefficients.h"
 #include <gtest/gtest.h>
 
 class SylvesterMatrixTests : public ::testing::Test
@@ -47,7 +48,9 @@ TEST_F(SylvesterMatrixTests, testInitPolynomialPower)
 TEST_F(SylvesterMatrixTests, TestChangeOfVariableBody)
 {
 //    SM->Print();
-    EXPECT_EQ(true, SM->changeOfVariableBody(1, 2, 3, 4));
+    SM->coefs = new ChangeOfVariableCoefficients(1, 2, 3, 4);
+
+    EXPECT_EQ(true, SM->changeOfVariableBody());
 //    SM->Print();
 
 }

@@ -8,11 +8,13 @@
 #include "eigen/Eigen/SVD"
 #include "eigen/Eigen/Eigenvalues"
 #include "Solution.h"
+#include "ChangeOfVariableCoefficients.h"
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> MyMatrixXd;
 class ProblemSolver
 {
     bool Solved;
     Solution ** Solutions;
+    int numOfSolutions;
     Eigen::MatrixXd Companion;
     Eigen::MatrixXd Md;
     unsigned int upperBound;
@@ -49,6 +51,18 @@ public:
     ProblemSolver(SylvesterPolynomial *, unsigned int, unsigned int);
     ~ProblemSolver();
     bool Solve();
+    int getNumOfSols()
+    {
+        return this->numOfSolutions;
+    }
+    bool substituteChangeOfVariable(ChangeOfVariableCoefficients *);
+    Solution * getSolution(int i)
+    {
+        if(this->numOfSolutions - 1 < i || i < 0)
+            return  NULL;
+        return this->Solutions[i];
+    }
+
 
 
 };

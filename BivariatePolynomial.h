@@ -34,6 +34,9 @@ public:
     ~BivariatePolynomial();
     int getCoefFromPolynomial(int & pos, char * polstr);
     void ParsePolynomialBody(int & i, char * polstr, char first, char second,int & firstCoord, int & secondCoord, int & choice , int coef);
+    double backSubstitute(double x, double y);
+
+    double exp(double num, double power);
 
 };
 

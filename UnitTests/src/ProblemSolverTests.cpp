@@ -75,7 +75,7 @@ TEST_F(ProblemSolverTests, testMd3)
     strcpy(p1, "1+y*x-x+y");
     strcpy(p2, "1+y*x^2-x^2+2*y*x+y+x");
     Bp1 = new BivariatePolynomial(p1, 2);
-    Bp2 = new BivariatePolynomial(p2, 2);
+    Bp2 = new BivariatePolynomial(p2, 3);
     SM = new SylvesterMatrix(Bp1, Bp2);
     SP2 = new SylvesterPolynomial(SM->getHiddenDeg(), SM->getRowDimension());
     SP2->SMatrixToSPolynomial(SM);
@@ -90,7 +90,7 @@ TEST_F(ProblemSolverTests, testMd3)
     EXPECT_EQ(1, m(2,2));
     unsigned int k = PS2->getStateIndicator();
     EXPECT_EQ(4265241472, k);
-    //SP2->Print();
+//    SP2->Print();
     PS2->Solve();
 }
 

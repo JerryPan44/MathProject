@@ -15,23 +15,24 @@ int SylvesterMatrix::max(int d1, int d2)
 
 bool SylvesterMatrix::changeOfVariable()
 {
-    int t1,t2,t3,t4;
+    int t1, t2, t3, t4;
     getRandom(t1);
     getRandom(t2);
     getRandom(t3);
     getRandom(t4);
-    this->changeOfVariableBody(t1, t2, t3, t4);
+    this->coefs = new ChangeOfVariableCoefficients(t1, t2, t3, t4);
+    this->changeOfVariableBody();
 }
 
-bool SylvesterMatrix::changeOfVariableBody(int t1, int t2, int t3, int t4)
+bool SylvesterMatrix::changeOfVariableBody()
 {
     int p[2];
-    p[0] = t1;
-    p[1] = t2;
+    p[0] = coefs->t1;
+    p[1] = coefs->t2;
     Polynomial ** powerUp1;         //matrix with all the powers of t1*z+t2
     initPowerUps(powerUp1, p, this->hiddenDeg + 1, 2);
-    p[0] = t3;
-    p[1] = t4;
+    p[0] = coefs->t3;
+    p[1] = coefs->t4;
     //create list for all the powerups and pass this as an argument for the changeofVariable
     Polynomial ** powerUp2;         //matrix with all the powers of t3*z+t4
     initPowerUps(powerUp2, p, this->hiddenDeg + 1, 2);

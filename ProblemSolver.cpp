@@ -100,9 +100,10 @@ bool ProblemSolver::solveStandardEigenProblem()
     cout<<"Roots"<<endl;
     cout<<"----------"<<endl;
     this->Solutions = new Solution*[eivals.rows()];
+    this->numOfSolutions = eivals.rows();
     for (int i = 0; i < eivals.rows(); ++i) {
         this->Solutions[i] = new Solution(eivecs(eivecs.rows() - 2,i).real()/eivecs(eivecs.rows() - 1,i).real(),
-                                          -eivals(i).real(), multiplicity[i]);
+                                          eivals(i).real(), multiplicity[i]);
         this->Solutions[i]->PrintSolution();
     }
     return true;
@@ -152,10 +153,10 @@ bool ProblemSolver::solveGeneralizedEigenProblem()
     MatrixXd L1(this->degree * dimensionM, this->degree * dimensionM);
     this->computeL0(L0);
     this->computeL1(L1);
-/*    cout<<"----L0---"<<degree<<dimensionM<<endl;
-    cout<<L0<<endl<<endl;
-    cout<<"----L1----"<<endl;
-    cout<<L1<<endl<<endl;*/
+//    cout<<"----L0---"<<degree<<dimensionM<<endl;
+//    cout<<L0<<endl<<endl;
+//    cout<<"----L1----"<<endl;
+//    cout<<L1<<endl<<endl;
     MatrixXd Eivecs(this->degree * dimensionM, this->degree * dimensionM);
     MatrixXd Eivals(this->degree * dimensionM, 3);
     LapackeSolveGeneralizedEigenProblem(L0, L1, Eivecs, Eivals);
@@ -167,14 +168,16 @@ bool ProblemSolver::solveGeneralizedEigenProblem()
         multiplicity[j] = 1;
     }
     removeSolsWithMultiplicityGeneralized(Eivecs, Eivals, multiplicity);
-    cout<<"EigenValues are : "<<endl<<Eivals<<endl<<endl;
-    cout<<"EigenVectors are : "<<endl<<Eivecs<<endl<<endl;
+//    cout<<"EigenValues are : "<<endl<<Eivals<<endl<<endl;
+//    cout<<"EigenVectors are : "<<endl<<Eivecs<<endl<<endl;
+
     cout<<"Roots"<<endl;
     cout<<"--------"<<endl;
     this->Solutions = new Solution * [Eivals.rows()];
+    this->numOfSolutions = Eivals.rows();
     for (int i = 0; i < Eivals.rows(); ++i) {
         this->Solutions[i] = new Solution(Eivecs(this->degree * dimensionM - 2,i)/Eivecs(degree * dimensionM - 1,i),
-                                          -Eivals(i, 0), multiplicity[i]);
+                                          -(Eivals(i, 0)/Eivals(i, 2)), multiplicity[i]);
         this->Solutions[i]->PrintSolution();
     }
 
@@ -183,6 +186,8 @@ bool ProblemSolver::solveGeneralizedEigenProblem()
 
 bool ProblemSolver::GeneralizedNoSolution(MatrixXd Eivecs, MatrixXd Eivals, int i)
 {
+    if(Eivals(i,0) != 0 && Eivals(i, 2) == 0)
+        return true;
     if(Eivecs(Eivecs.rows() - 1, i) == 0 && Eivecs(Eivecs.rows() - 1, i) == 0)                  //no solution
         return true;
     if(isCloseToZero(Eivals(i, 1)))       //if the eigenvalue has no imaginary part
@@ -309,13 +314,8 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
     int numCols = Eivecs.cols() - 1;
     for (int j = 0; j < Eivals.rows(); ++j) {
         for (int l = 0; l < Eivals.rows(); ++l) {
-            if((Eivals(j) == Eivals(l) && l != j) || this->StandardNoSolution(Eivecs, Eivals, l)) {
-                if(!this->StandardNoSolution(Eivecs, Eivals, l))
-                {
-//                    cout<<"MULTIPLICITY ++ "<<endl;
-//                    cout<<Eivecs(l)<<Eivals(l);
-                    Multiplicity[j]++;
-                }
+            if((Eivals(j) == Eivals(l) && l != j)) {
+                Multiplicity[j]++;
                 if( l < numRows )
                     Eivals.block(l, 0, numRows - l, Eivals.cols()) = Eivals.block(l + 1, 0, numRows - l, Eivals.cols());
                 if( l < numCols )
@@ -329,6 +329,20 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
             }
         }    
     }
+    for (int j = 0; j < Eivals.rows(); ++j) {
+        if(this->StandardNoSolution(Eivecs, Eivals, j))
+        {
+            if( j < numRows )
+                Eivals.block(j, 0, numRows - j, Eivals.cols()) = Eivals.block(j + 1, 0, numRows - j, Eivals.cols());
+            if( j < numCols )
+                Eivecs.block(0,j, Eivecs.rows(), numCols - j) = Eivecs.block(0,j+1,Eivecs.rows(),numCols-j);
+            Eivals.conservativeResize(numRows,Eivals.cols());
+            Eivecs.conservativeResize(Eivecs.rows(),numCols);
+            numRows = Eivals.rows() - 1;
+            numCols = Eivecs.cols() - 1;
+            continue;
+        }
+    }
     return ret;
 }
 
@@ -339,13 +353,10 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
     int numCols = Eivecs.cols() - 1;
     for (int j = 0; j < Eivals.rows(); ++j) {
         for (int l = 0; l < Eivals.rows(); ++l) {
-            if((Eivals(j) == Eivals(l) && l != j ) || this->GeneralizedNoSolution(Eivecs, Eivals, l)) {
-                if(!this->GeneralizedNoSolution(Eivecs, Eivals, l))
-                {
-//                    cout<<"MULTIPLICITY ++ "<<endl;
-//                    cout<<Eivecs(l)<<Eivals(l,0);
-                    Multiplicity[j]++;
-                }
+            if(Eivals(j,0) == Eivals(l,0) && Eivals(j,2) == Eivals(l,2) && l != j ) {
+                Multiplicity[j]++;
+//                if(this->GeneralizedNoSolution(Eivecs, Eivals, l))
+//                    cout<<Eivals(j, 0)<<"/"<<Eivals(j,2)<<"  "<<Eivals(l,0)<<"/"<<Eivals(l,2)<<endl;
                 if( l < numRows )
                     Eivals.block(l, 0, numRows - l, Eivals.cols()) = Eivals.block(l + 1, 0, numRows - l, Eivals.cols());
                 if( l < numCols )
@@ -358,5 +369,32 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
             }
         }
     }
+    for (int j = 0; j < Eivals.rows(); ++j) {
+        if(this->GeneralizedNoSolution(Eivecs, Eivals, j))
+        {
+            if( j < numRows )
+                Eivals.block(j, 0, numRows - j, Eivals.cols()) = Eivals.block(j + 1, 0, numRows - j, Eivals.cols());
+            if( j < numCols )
+                Eivecs.block(0,j, Eivecs.rows(), numCols - j) = Eivecs.block(0,j+1,Eivecs.rows(),numCols-j);
+            Eivals.conservativeResize(numRows,Eivals.cols());
+            Eivecs.conservativeResize(Eivecs.rows(),numCols);
+            numRows = Eivals.rows() - 1;
+            numCols = Eivecs.cols() - 1;
+            continue;
+        }
+    }
     return ret;
+}
+
+bool ProblemSolver::substituteChangeOfVariable(ChangeOfVariableCoefficients * coefs)
+{
+    for (int j = 0; j < this->numOfSolutions; ++j) {
+        double x = this->Solutions[j]->getX();
+        double y = this->Solutions[j]->getY();
+        int mul = this->Solutions[j]->getMultiplicity();
+        x = (x - coefs->t2)/coefs->t1;
+        y = (y - coefs->t4)/coefs->t3;
+        delete this->Solutions[j];
+        this->Solutions[j] = new Solution(x, y, mul);
+    }
 }

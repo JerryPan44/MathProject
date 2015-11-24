@@ -29,26 +29,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SylvesterPolynomial.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SylvesterPolynomial.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Solution.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Solution.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="29" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Solution.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Solution.cpp">
           <provider selected="true" editor-type-id="text-editor">
@@ -63,39 +43,57 @@
         <entry file="file://$PROJECT_DIR$/ProblemSolver.h">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="30" column="77" selection-start-line="30" selection-start-column="77" selection-end-line="30" selection-end-column="77" />
+              <caret line="10" column="40" selection-start-line="10" selection-start-column="40" selection-end-line="10" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProblemSolver.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ProblemSolver.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ProblemSolver.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4920635">
-              <caret line="351" column="26" selection-start-line="351" selection-start-column="26" selection-end-line="351" selection-end-column="26" />
-              <folding>
-                <marker date="1448294193647" expanded="true" signature="11374:11475" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProblemSolverTests.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/UnitTests/src/ProblemSolverTests.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="80" column="34" selection-start-line="80" selection-start-column="34" selection-end-line="80" selection-end-column="34" />
+            <state vertical-scroll-proportion="-16.392857">
+              <caret line="399" column="1" selection-start-line="399" selection-start-column="1" selection-end-line="399" selection-end-column="1" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SylvesterMatrixTests.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/UnitTests/src/SylvesterMatrixTests.cpp">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
+              <caret line="141" column="41" selection-start-line="141" selection-start-column="41" selection-end-line="141" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChangeOfVariableCoefficients.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ChangeOfVariableCoefficients.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="6" column="60" selection-start-line="6" selection-start-column="60" selection-end-line="6" selection-end-column="60" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BivariatePolynomial.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BivariatePolynomial.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="28" column="5" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SylvesterMatrixTests.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/UnitTests/src/SylvesterMatrixTests.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.69579834">
+              <caret line="50" column="59" selection-start-line="50" selection-start-column="59" selection-end-line="50" selection-end-column="59" />
               <folding />
             </state>
           </provider>
@@ -105,17 +103,29 @@
         <entry file="file://$PROJECT_DIR$/SylvesterMatrix.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="15" column="28" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="28" />
+              <caret line="316" column="0" selection-start-line="316" selection-start-column="0" selection-end-line="316" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Polynomial.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Polynomial.cpp">
+      <file leaf-file-name="SylvesterMatrix.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SylvesterMatrix.h">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="92" column="23" selection-start-line="92" selection-start-column="23" selection-end-line="92" selection-end-column="23" />
+              <caret line="21" column="40" selection-start-line="21" selection-start-column="35" selection-end-line="21" selection-end-column="40" />
+              <folding>
+                <element signature="e#54#86#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BivariatePolynomial.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/BivariatePolynomial.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="231" column="17" selection-start-line="231" selection-start-column="17" selection-end-line="231" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -126,7 +136,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/BivariatePolynomial.h" />
         <option value="$PROJECT_DIR$/Parse.cpp" />
         <option value="$PROJECT_DIR$/Matrix.h" />
         <option value="$PROJECT_DIR$/SylvesterPolynomial.cpp" />
@@ -138,20 +147,22 @@
         <option value="$PROJECT_DIR$/UnitTests/main.cpp" />
         <option value="$PROJECT_DIR$/UnitTests/PolynomialTests.cpp" />
         <option value="$PROJECT_DIR$/../../Database/k23project/UnitTests/main.cpp" />
-        <option value="$PROJECT_DIR$/SylvesterMatrix.h" />
-        <option value="$PROJECT_DIR$/SylvesterMatrix.cpp" />
         <option value="$PROJECT_DIR$/Polynomial.cpp" />
         <option value="$PROJECT_DIR$/UnitTests/src/PolynomialTests.cpp" />
-        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/UnitTests/src/main.cpp" />
-        <option value="$PROJECT_DIR$/UnitTests/src/SylvesterMatrixTests.cpp" />
         <option value="$PROJECT_DIR$/SylvesterPolynomial.h" />
-        <option value="$PROJECT_DIR$/BivariatePolynomial.cpp" />
-        <option value="$PROJECT_DIR$/UnitTests/src/ProblemSolverTests.cpp" />
-        <option value="$PROJECT_DIR$/ProblemSolver.h" />
-        <option value="$PROJECT_DIR$/Solution.h" />
         <option value="$PROJECT_DIR$/Solution.cpp" />
+        <option value="$PROJECT_DIR$/Solution.h" />
+        <option value="$PROJECT_DIR$/UnitTests/src/ProblemSolverTests.cpp" />
+        <option value="$PROJECT_DIR$/SylvesterMatrix.cpp" />
+        <option value="$PROJECT_DIR$/ProblemSolver.h" />
         <option value="$PROJECT_DIR$/ProblemSolver.cpp" />
+        <option value="$PROJECT_DIR$/BivariatePolynomial.h" />
+        <option value="$PROJECT_DIR$/ChangeOfVariableCoefficients.h" />
+        <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/BivariatePolynomial.cpp" />
+        <option value="$PROJECT_DIR$/SylvesterMatrix.h" />
+        <option value="$PROJECT_DIR$/UnitTests/src/SylvesterMatrixTests.cpp" />
       </list>
     </option>
   </component>
@@ -271,13 +282,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-5" y="-3" width="1930" height="1053" extended-state="7" />
-    <editor active="true" />
+    <frame x="-5" y="-3" width="1930" height="1053" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32972974" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3319012" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32980973" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3319012" sideWeight="0.49605057" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3319012" sideWeight="0.50394946" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24960506" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32690248" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -330,13 +341,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/SylvesterMatrix.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="47" selection-start-line="40" selection-start-column="47" selection-end-line="40" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Polynomial.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -563,13 +567,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/BivariatePolynomial.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="40" selection-start-line="29" selection-start-column="40" selection-end-line="29" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Polynomial.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -582,16 +579,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SylvesterMatrix.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="79" selection-start-line="16" selection-start-column="79" selection-end-line="16" selection-end-column="79" />
-          <folding>
-            <element signature="e#54#86#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -611,27 +598,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-26.678572">
-          <caret line="141" column="35" selection-start-line="141" selection-start-column="35" selection-end-line="141" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/UnitTests/src/PolynomialTests.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="92" column="17" selection-start-line="92" selection-start-column="17" selection-end-line="92" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SylvesterMatrix.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="28" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -643,26 +613,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/BivariatePolynomial.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.2689075">
-          <caret line="15" column="38" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/UnitTests/src/SylvesterMatrixTests.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SylvesterPolynomial.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="26" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+          <folding>
+            <element signature="e#63#91#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Solution.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="34" selection-start-line="23" selection-start-column="34" selection-end-line="23" selection-end-column="34" />
           <folding />
         </state>
       </provider>
@@ -670,15 +634,15 @@
     <entry file="file://$PROJECT_DIR$/UnitTests/src/ProblemSolverTests.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="34" selection-start-line="80" selection-start-column="34" selection-end-line="80" selection-end-column="34" />
+          <caret line="67" column="2" selection-start-line="67" selection-start-column="2" selection-end-line="67" selection-end-column="2" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Solution.h">
+    <entry file="file://$PROJECT_DIR$/ChangeOfVariableCoefficients.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="29" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
+          <caret line="6" column="60" selection-start-line="6" selection-start-column="60" selection-end-line="6" selection-end-column="60" />
           <folding />
         </state>
       </provider>
@@ -694,18 +658,66 @@
     <entry file="file://$PROJECT_DIR$/ProblemSolver.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="77" selection-start-line="30" selection-start-column="77" selection-end-line="30" selection-end-column="77" />
+          <caret line="10" column="40" selection-start-line="10" selection-start-column="40" selection-end-line="10" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BivariatePolynomial.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="5" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BivariatePolynomial.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="231" column="17" selection-start-line="231" selection-start-column="17" selection-end-line="231" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ProblemSolver.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4920635">
-          <caret line="351" column="26" selection-start-line="351" selection-start-column="26" selection-end-line="351" selection-end-column="26" />
+        <state vertical-scroll-proportion="-16.392857">
+          <caret line="399" column="1" selection-start-line="399" selection-start-column="1" selection-end-line="399" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="141" column="41" selection-start-line="141" selection-start-column="41" selection-end-line="141" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SylvesterMatrix.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="40" selection-start-line="21" selection-start-column="35" selection-end-line="21" selection-end-column="40" />
           <folding>
-            <marker date="1448294193647" expanded="true" signature="11374:11475" placeholder="..." />
+            <element signature="e#54#86#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SylvesterMatrix.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="316" column="0" selection-start-line="316" selection-start-column="0" selection-end-line="316" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/UnitTests/src/SylvesterMatrixTests.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.69579834">
+          <caret line="50" column="59" selection-start-line="50" selection-start-column="59" selection-end-line="50" selection-end-column="59" />
+          <folding />
         </state>
       </provider>
     </entry>
