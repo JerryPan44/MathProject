@@ -114,7 +114,7 @@ void solveProblem(char * filename, int d1, int d2,int B)
     cleanResources(PS, SM, Bp1, Bp2, SP, m);							//clean resources
 }
 
-bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)		//7)
+bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)
 {
     int numSols = PS->getNumOfSols();
     for (int i = 0; i < numSols; ++i) {

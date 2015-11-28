@@ -5,24 +5,23 @@
 #include "Parse.h"
 using namespace std;
 
-void Parser:: readInput(char filename[], char*& polynomial1, char*& polynomial2)
+void Parser:: readInput(char filename[], char*& polynomial1, char*& polynomial2)		//Read stdin of file
 {
     if(filename == NULL)
-        Parser::readFromStdin(polynomial1, polynomial2);            //read from stdin
+        Parser::readFromStdin(polynomial1, polynomial2);            				//read from stdin
     else
-        Parser::readFromFile(filename, polynomial1, polynomial2);       //read from file
+        Parser::readFromFile(filename, polynomial1, polynomial2);       			//else read from file
 }
 
-void Parser:: readFromFile(char filename[], char*& polynomial1, char*& polynomial2)
+void Parser:: readFromFile(char filename[], char*& polynomial1, char*& polynomial2)		//Read from file
 {
     FILE * input;
-    input=fopen(filename, "r");
-    //might change
-    Parser::readData(input, polynomial1, polynomial2);
-    //convert polynomial1 to matrix representation
-    fclose(input);
+    input=fopen(filename, "r");									//Open file
+    Parser::readData(input, polynomial1, polynomial2);						//Read the data
+    fclose(input);										//Close file
 }
-int Parser:: countLine(FILE * f)            //count the number of chars in the line and rewind
+
+int Parser:: countLine(FILE * f)           							//count the number of chars in the line and rewind
 {
     if(f==stdin)
         return 200;
@@ -36,7 +35,7 @@ int Parser:: countLine(FILE * f)            //count the number of chars in the l
     fseek(f, -i-1, SEEK_CUR);
     return i;
 }
-void Parser:: readLine(FILE * f, char *s)           //read the line
+void Parser:: readLine(FILE * f, char *s)           						//read the line
 {
     int i=0;
     char c;
@@ -47,18 +46,17 @@ void Parser:: readLine(FILE * f, char *s)           //read the line
     }
     s[i]='\0';
 }
-void Parser:: readData(FILE * input, char*& polynomial1, char*& polynomial2)
+void Parser:: readData(FILE * input, char*& polynomial1, char*& polynomial2)			//Read data
 {
     char strd1[5], strd2[5];
-    polynomial1 = new char[Parser::countLine(input)+1];     //read polynomial 1
-    Parser:: readLine(input, polynomial1);
-    polynomial2 = new char[Parser::countLine(input)+1];     //read polynomial 2
-    Parser:: readLine(input, polynomial2);
+    polynomial1 = new char[Parser::countLine(input)+1];
+    Parser:: readLine(input, polynomial1);							//read polynomial 1
+    polynomial2 = new char[Parser::countLine(input)+1];
+    Parser:: readLine(input, polynomial2);							//read polynomial 2
 }
 
-void Parser:: readFromStdin(char*& polynomial1, char*& polynomial2)
+void Parser:: readFromStdin(char*& polynomial1, char*& polynomial2)				//Read from stdin
 {
-    //FILE * input = stdin;
     Parser::readData(stdin, polynomial1, polynomial2);
 
 
