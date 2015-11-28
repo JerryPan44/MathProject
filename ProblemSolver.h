@@ -33,8 +33,8 @@ class ProblemSolver
     bool initMI(Eigen::MatrixXd& mI, double ** tempMD, int matrixDimensions);
     bool LapackeSolveGeneralizedEigenProblem(Eigen::MatrixXd& A, Eigen::MatrixXd & B, Eigen::MatrixXd& Eivecs, Eigen::MatrixXd& Eivals);
     bool isUnsolvable();
-    bool GeneralizedNoSolution(Eigen::MatrixXd Eivecs, Eigen::MatrixXd Eivals, int i);
-    bool StandardNoSolution(Eigen::MatrixXcd Eivecs, Eigen::MatrixXcd Eivals, int i);
+    bool GeneralizedNoSolution(Eigen::MatrixXd Eivecs, Eigen::MatrixXd Eivals, int i, int *);
+    bool StandardNoSolution(Eigen::MatrixXcd Eivecs, Eigen::MatrixXcd Eivals, int i, int *);
     void powerOf(int& Num, int power);
     bool isCloseToZero(double Num);
     bool removeSolsWithMultiplicityStandard(Eigen::MatrixXcd &, Eigen::MatrixXcd &, int * );

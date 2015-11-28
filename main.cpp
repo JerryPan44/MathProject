@@ -97,7 +97,6 @@ void solveProblem(char * filename, int d1, int d2,int B)
     int SpDeg = getHiddenMaxDeg(SM, Bp1, Bp2);
     SylvesterPolynomial * SP = new SylvesterPolynomial(SM->getHiddenDeg(), SM->getRowDimension());	//sylvester polynomial of sylvester matrix hidden variable degree
     SP->SMatrixToSPolynomial(SM);								//convert Sylvester Matrix to sylvester polynomial
-    SP->Print();
     MyMatrix * m = new MyMatrix(SM->getRowDimension(), 1);					//random matrix of 1 column (the vector v)
 /*  m->generate();
     cout<<"multiplying Sylvester Matrix with"<<endl;

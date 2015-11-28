@@ -84,7 +84,6 @@ bool ProblemSolver::solveStandardEigenProblem()		//2)
     if(degree < 1)
         return false;
     computeCompanion();
-    cout<<this->Companion<<endl<<endl;
 
     EigenSolver<MatrixXd> es(this->Companion);
 
@@ -109,12 +108,14 @@ bool ProblemSolver::solveStandardEigenProblem()		//2)
     return true;
 }
 
-bool ProblemSolver::StandardNoSolution(MatrixXcd Eivecs, MatrixXcd Eivals, int i)
+bool ProblemSolver::StandardNoSolution(MatrixXcd Eivecs, MatrixXcd Eivals, int i, int * Multiplicity)
 {
-    if(Eivecs(Eivecs.rows() - 1, i).real() == 0 && Eivals(Eivecs.rows() - 1, i).imag() == 0)                  //no solution
+
+    if(Eivecs(Eivecs.rows() - 1, i).real() == 0 && Eivals(Eivecs.rows() - 1, i).imag() == 0 && Multiplicity[i] == 1)                  //no solution
         return true;
     if(isCloseToZero(Eivals(i).imag()))
         return false;
+    return true;
 }
 
 bool ProblemSolver::isCloseToZero(double Num)
@@ -181,15 +182,14 @@ bool ProblemSolver::solveGeneralizedEigenProblem()		//3)
                                           -(Eivals(i, 0)/Eivals(i, 2)), multiplicity[i]);
         this->Solutions[i]->PrintSolution();
     }
-
     return false;
 }
 
-bool ProblemSolver::GeneralizedNoSolution(MatrixXd Eivecs, MatrixXd Eivals, int i)
+bool ProblemSolver::GeneralizedNoSolution(MatrixXd Eivecs, MatrixXd Eivals, int i, int * Multiplicity)
 {
-    if(Eivals(i,0) != 0 && Eivals(i, 2) == 0)
+    if(Eivals(i, 2) == 0 || Eivals(i,2) < 0.00001)
         return true;
-    if(Eivecs(Eivecs.rows() - 1, i) == 0 && Eivecs(Eivecs.rows() - 1, i) == 0)                  //no solution
+    if(Eivecs(Eivecs.rows() - 1, i) == 0 && Multiplicity[i] == 1)                  //no solution
         return true;
     if(isCloseToZero(Eivals(i, 1)))       //if the eigenvalue has no imaginary part
         return false;
@@ -315,7 +315,7 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
     int numCols = Eivecs.cols() - 1;
     for (int j = 0; j < Eivals.rows(); ++j) {
         for (int l = 0; l < Eivals.rows(); ++l) {
-            if((Eivals(j) == Eivals(l) && l != j)) {
+            if((Eivals(j).real() == Eivals(l).real() && Eivals(j).imag() == Eivals(l).imag() && l != j)) {
                 Multiplicity[j]++;
                 if( l < numRows )
                     Eivals.block(l, 0, numRows - l, Eivals.cols()) = Eivals.block(l + 1, 0, numRows - l, Eivals.cols());
@@ -331,7 +331,7 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
         }    
     }
     for (int j = 0; j < Eivals.rows(); ++j) {
-        if(this->StandardNoSolution(Eivecs, Eivals, j))
+        if(this->StandardNoSolution(Eivecs, Eivals, j, Multiplicity))
         {
             if( j < numRows )
                 Eivals.block(j, 0, numRows - j, Eivals.cols()) = Eivals.block(j + 1, 0, numRows - j, Eivals.cols());
@@ -371,7 +371,8 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
         }
     }
     for (int j = 0; j < Eivals.rows(); ++j) {
-        if(this->GeneralizedNoSolution(Eivecs, Eivals, j))
+
+        if(this->GeneralizedNoSolution(Eivecs, Eivals, j, Multiplicity))
         {
             if( j < numRows )
                 Eivals.block(j, 0, numRows - j, Eivals.cols()) = Eivals.block(j + 1, 0, numRows - j, Eivals.cols());

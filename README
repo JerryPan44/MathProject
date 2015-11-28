@@ -1,4 +1,4 @@
-Project 1 Software Development for algorithmic problems.
+Project 2 Software Development for algorithmic problems.
 
 BivariatePolynomial.h	:	class to store a bivariate polynomial
 
@@ -35,6 +35,16 @@ make
 cp -r ../include/gtest /usr/local/include
 cp lib*.a /usr/local/lib
 
+tested input polynomials :
+
+-3+2*y*x+y
+5+y*x^2+4*x-y
+
+1+y*x-x+y
+1+y*x^2-x^2+2*y*x+y+x
+
+1+x^2-y
+-8+x^2+5*y
 
 
 The project was developed by :
