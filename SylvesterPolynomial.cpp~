@@ -21,13 +21,13 @@ bool SylvesterPolynomial::SMatrixToSPolynomial(SylvesterMatrix * SM)						//Syl.
         AssignPolynomial(i, PolMatrix);
     }
 }
-void SylvesterPolynomial::AssignPolynomial(int currDeg, Polynomial *** PolMatrix)				//Sylvester polynomial to matrix representation
+void SylvesterPolynomial::AssignPolynomial(int currDeg, Polynomial *** PolMatrix)				//
 {
     double ** matrix = this->polynomial[currDeg]->getMatrix();
     for (int i = 0; i < matrixDimensions; ++i) {
         for (int j = 0; j < matrixDimensions; ++j) {
-            if(currDeg > PolMatrix[i][j]->getDegree())								//If there is no variable over max degree
-                matrix[i][j]=0;											//fill matrix with zeros
+            if(currDeg > PolMatrix[i][j]->getDegree())
+                matrix[i][j]=0;
             else
             {
                 matrix[i][j] = PolMatrix[i][j]->getPolynomial()[currDeg];
@@ -36,7 +36,7 @@ void SylvesterPolynomial::AssignPolynomial(int currDeg, Polynomial *** PolMatrix
     }
 }
 
-void SylvesterPolynomial::Print()										//Print Syl. Polynomial
+void SylvesterPolynomial::Print()
 {
     cout<<"*******"<<endl;
     cout<<"Sylvester Polynomial Degree : "<<this->degree<<endl;

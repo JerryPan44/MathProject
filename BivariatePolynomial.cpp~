@@ -5,15 +5,15 @@
 #include <cstring>
 #include "BivariatePolynomial.h"
 using namespace std;
-
-void BivariatePolynomial::InitDegs()							//find polynomial y, x degrees
+//implementation file
+void BivariatePolynomial::InitDegs()                            //initialize polynomial y, x degrees
 {
     this->degy = 0;
     bool foundx=false,foundy=false;
     this->degx = 0;
     for (int i = matrixDimension -1; i >=0 ; --i) {
         for(int j=matrixDimension-1;j>=0 ; j--)
-            if(this->MatrixRepresentation[i][j]!=0)					//find the biggest power of y
+            if(this->MatrixRepresentation[i][j]!=0)                         //find the biggest power of y
             {
                 this->degy = i;
                 foundx = true;
@@ -22,7 +22,7 @@ void BivariatePolynomial::InitDegs()							//find polynomial y, x degrees
         if(foundx)
             break;
     }
-    for (int i = matrixDimension-1; i >=0 ; --i) {					//find the biggest power of x
+    for (int i = matrixDimension-1; i >=0 ; --i) {                                  //find the biggest power of x
         for(int j=matrixDimension-1;j>=0 ; j--)
             if(this->MatrixRepresentation[j][i]!=0)
             {
@@ -36,11 +36,12 @@ void BivariatePolynomial::InitDegs()							//find polynomial y, x degrees
 
 }
 
-void BivariatePolynomial::Print()							//Print polynomial
+void BivariatePolynomial::Print()
 {
-    cout<<"DEGY : "<<this->degy<<endl<<"DEGX : "<<this->degx<<endl;			//print degree of y, degree of x
+    cout<<"DEGY : "<<this->degy<<endl<<"DEGX : "<<this->degx<<endl;
     for(int i=matrixDimension-1;i >= 0;i--)
     {
+        //cout<<"row "<<i<<" :  ";
         for (int j = matrixDimension - 1; j >= 0; --j)
         {
             cout << this->MatrixRepresentation[i][j]<<" ";
@@ -56,13 +57,13 @@ BivariatePolynomial::BivariatePolynomial(char polstr[], int sD)
     for (int i = 0; i < matrixDimension; ++i) {
         this->MatrixRepresentation[i] = new int[matrixDimension];
         for (int j = 0; j < matrixDimension; ++j) {
-            this->MatrixRepresentation[i][j] = 0					//initialize matrix elements (== 0)
+            this->MatrixRepresentation[i][j] = 0;                   //initialize the matrix
         }
     }
-    Parse(polstr);									//parse the polynomial
-    InitDegs();										//find the degrees
+    Parse(polstr);                                              //parse the polynomial
+    InitDegs();                                         //find the degrees
 }
-BivariatePolynomial::BivariatePolynomial(int sD)					//Create random polynomial
+BivariatePolynomial::BivariatePolynomial(int sD)
 {
 
     srand (time(NULL)+rand()%10000);
@@ -71,10 +72,10 @@ BivariatePolynomial::BivariatePolynomial(int sD)					//Create random polynomial
     for (int i = 0; i < matrixDimension; ++i) {
         this->MatrixRepresentation[i] = new int[matrixDimension];
         for (int j = 0; j < matrixDimension; ++j) {
-            this->MatrixRepresentation[i][j] = (rand()%100) - 50;			//Matrix element range (-50,50)
+            this->MatrixRepresentation[i][j] = (rand()%100) - 50;
         }
     }
-    InitDegs();										//Find the degrees
+    InitDegs();
 }
 
 
@@ -82,13 +83,13 @@ void BivariatePolynomial::Parse(char polstr[])
 {
     if(this->MatrixRepresentation == NULL)
     {
-        perror("Matrix is null");							//Empty Matrix
+        perror("Matrix is null");
         return;
     }
     int col=0,row=0,coef=1,j=0;
     bool isPositive = true;
 
-    if(polstr[0] == '-') {                              				//zero power coeficient case
+    if(polstr[0] == '-') {                              //zero power coeficient case
         isPositive = false;
         j++;
     }
@@ -103,9 +104,9 @@ void BivariatePolynomial::Parse(char polstr[])
         col = 0;
         row = 0;
         if (polstr[i] == '+' || polstr[i] == '-') {
-            isPositive = polstr[i] == '+' ? true : false;           			//find if coef is positive or negative
+            isPositive = polstr[i] == '+' ? true : false;           //find if coef is positive or negative
             i++;
-            coef = getCoefFromPolynomial(i, polstr);    				//reads the coeficient
+            coef = getCoefFromPolynomial(i, polstr);    //reads the coeficient
             choice = 0;
             ParsePolynomialBody(i, polstr, 'x', 'y', col, row, choice, coef);           //parse either with *x first
             ParsePolynomialBody(i, polstr, 'y', 'x', row, col, choice, coef);           //or with *y first
@@ -113,6 +114,9 @@ void BivariatePolynomial::Parse(char polstr[])
                 this->MatrixRepresentation[row][col] = coef;
             else
                 this->MatrixRepresentation[row][col] = -coef;
+//            cout << "iteration : "<< i << endl;
+//            BivariatePolynomial::Print();
+
         }
         else
         {
@@ -123,22 +127,21 @@ void BivariatePolynomial::Parse(char polstr[])
 
 }
 
-void BivariatePolynomial::ParsePolynomialBody(int & i, char * polstr, char first, char second, int & firstCoord, int & secondCoord, int & choice, int coef)
-											//parsing method
+void BivariatePolynomial::ParsePolynomialBody(int & i, char * polstr, char first, char second, int & firstCoord, int & secondCoord, int & choice, int coef)       //parsing method
 {
-    if(choice == 1)									//if you chose another method before that return
+    if(choice == 1)                                                 //if you chose another method before that return
         return;
-    if(polstr[i + 1] == second || (polstr[i + 2] == second && coef == 1))		//case we arent in the correct call
+    if(polstr[i + 1] == second || (polstr[i + 2] == second && coef == 1))             //case we arent in the correct call
         return;
 
     if (polstr[i + 1] == '*' || coef == 1) {
-        if(coef == 1 && polstr[i+1] != '*')						//case we have x*y and not 1*x*y
+        if(coef == 1 && polstr[i+1] != '*')             //case we have x*y and not 1*x*y
             i--;
         if (polstr[i + 2] == first) {
             choice = 1;
             if (polstr[i + 3] == '^') {
                 if(!consume(polstr, i, 4))
-                    return;								//no of chars consumed
+                    return;                                                 //no of chars consumed
                 firstCoord = getCoefFromPolynomial(i, polstr);
                 if (polstr[i + 1] == '*') {
                     if (polstr[i + 2] == second) {
@@ -165,7 +168,7 @@ void BivariatePolynomial::ParsePolynomialBody(int & i, char * polstr, char first
                         if (polstr[i + 2] == '^') {
                             if(!consume(polstr, i, 3))
                                 return;
-                            secondCoord = getCoefFromPolynomial(i, polstr);		//no of chars consumed
+                            secondCoord = getCoefFromPolynomial(i, polstr);                             //no of chars consumed
                         }
                         else
                         {
@@ -193,10 +196,10 @@ bool BivariatePolynomial::consume(char * str, int & pos, int numChars)
 int BivariatePolynomial::getCoefFromPolynomial(int & pos, char * polstr)
 {
     int count = 0;
-    if(!isdigit(polstr[pos]))
+    if(!isdigit(polstr[pos]))       //if no digit return 1
     {
         pos += count - 1;
-        return 1;									//if no digit return 1
+        return 1;
     }
 
     char * strCoef;
@@ -206,7 +209,7 @@ int BivariatePolynomial::getCoefFromPolynomial(int & pos, char * polstr)
     strCoef = new char[count+1];
     strCoef[count] = '\0';
     count = 0;
-    while (isdigit(polstr[pos + count])) {						//else read the digits one by one and return them as an int
+    while (isdigit(polstr[pos + count])) {          //else read the digits one by one and return them as an int
         strCoef[count] = polstr[pos + count];
         count++;
     }
@@ -217,6 +220,9 @@ int BivariatePolynomial::getCoefFromPolynomial(int & pos, char * polstr)
 }
 BivariatePolynomial::~BivariatePolynomial()
 {
+//    for (int i = 0; i < this->matrixDimension; ++i) {
+//        delete this->MatrixRepresentation[i];
+//    }
     delete []this->MatrixRepresentation;
 }
 
@@ -225,7 +231,7 @@ double BivariatePolynomial::exp(double num, double power)
     if(power == 0)
         return 1;
     double first = num;
-    for (int i = 0; i < power - 1; ++i) {
+    for (int i = 0; i < power; ++i) {
         num *= first;
     }
     return first;
@@ -237,7 +243,7 @@ double BivariatePolynomial::backSubstitute(double x, double y)
     for (int i = 0; i < this->degx; ++i) {
         for (int j = 0; j < this->degy; ++j) {
             if(this->MatrixRepresentation[i][j] != 0)
-                sum += this->MatrixRepresentation[i][j]*(exp(x, i) * exp(y, j));
+                sum += this->MatrixRepresentation[i][j]*(exp(x, i) + exp(y, j));
         }
     }
     return sum;

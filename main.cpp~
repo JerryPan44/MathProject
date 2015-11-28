@@ -114,18 +114,18 @@ void solveProblem(char * filename, int d1, int d2,int B)
     cleanResources(PS, SM, Bp1, Bp2, SP, m);							//clean resources
 }
 
-bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)		//7)
+bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)
 {
     int numSols = PS->getNumOfSols();
     for (int i = 0; i < numSols; ++i) {
         Solution * sol = PS->getSolution(i);
         if(sol->getMultiplicity() == 1) {
-            double res1 = Bp1->backSubstitute(sol->getX(), sol->getY());
-            double res2 = Bp2->backSubstitute(sol->getX(), sol->getY());
+            int res1 = Bp1->backSubstitute(sol->getX(), sol->getY());
+            int res2 = Bp2->backSubstitute(sol->getX(), sol->getY());
             if(res1 < 0.000001 && res1 < 0.000001)
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
             else
-                cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED : "<<res1<<" , "<<res2<<endl;
+                cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED"<<endl;
         }
     }
 }

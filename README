@@ -12,13 +12,17 @@ SylvesterMatrix.h	:	class for the Sylvester Matrix a 2dimensional matrix with po
 
 SylvesterPolynomial.h	:	the final form of the Sylvester Matrix a polynomial of matrices
 
+ProblemSolver.h		:	class containing every necessary funtion for the solution
+
+Solution.h		:	class for the final solution (y,x,multiplicity)
+
 the matrices are printed inverted (the biggest power is in the smallest position) but are actually in memory in reverse the biggest power in the biggest position.
 
 The project is compiled with terminal command : make
 or cleaned with make clean
 
-and run with command ./exe -read -i InputFile -d1 2 -d2 3 -B 8
-or  ./exe -generate -d1 2 -d2 2 -B 8	(1st line the first polynomial 2nd line the second).
+and run with command ./exe -read -i InputFile -d1 2 -d2 3 -solve 8
+or  ./exe -generate -d1 2 -d2 2 -solve 8	(1st line the first polynomial 2nd line the second).
 //!Important the only thing you have to consider in parsing is that the first number in the polynomial must always be the zero power coefficient
 
 GoogleTest installation:
