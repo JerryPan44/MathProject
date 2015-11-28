@@ -56,7 +56,7 @@ BivariatePolynomial::BivariatePolynomial(char polstr[], int sD)
     for (int i = 0; i < matrixDimension; ++i) {
         this->MatrixRepresentation[i] = new int[matrixDimension];
         for (int j = 0; j < matrixDimension; ++j) {
-            this->MatrixRepresentation[i][j] = 0					//initialize matrix elements (== 0)
+            this->MatrixRepresentation[i][j] = 0;					//initialize matrix elements (== 0)
         }
     }
     Parse(polstr);									//parse the polynomial
