@@ -4,7 +4,7 @@
 #include "PolynomialTests.cpp"
 #include "SylvesterMatrixTests.cpp"
 #include "ProblemSolverTests.cpp"
-
+#include "BivariatePolynomialTests.cpp"
 int main(int argc, char * argv[])
 {
 

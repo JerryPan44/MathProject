@@ -140,12 +140,12 @@ bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pr
     for (int i = 0; i < numSols; ++i) {
         Solution * sol = PS->getSolution(i);
         if(sol->getMultiplicity() == 1) {
-            int res1 = Bp1->backSubstitute(sol->getX(), sol->getY());
-            int res2 = Bp2->backSubstitute(sol->getX(), sol->getY());
+            double res1 = Bp1->backSubstitute(sol->getX(), sol->getY());
+            double res2 = Bp2->backSubstitute(sol->getX(), sol->getY());
             if(res1 < 0.000001 && res1 < 0.000001)
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
             else
-                cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED"<<endl;
+                cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED : "<<res1<<" , "<<res2<<endl;
         }
     }
 }

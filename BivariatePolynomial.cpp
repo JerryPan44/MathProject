@@ -231,7 +231,7 @@ double BivariatePolynomial::exp(double num, double power)
     if(power == 0)
         return 1;
     double first = num;
-    for (int i = 0; i < power; ++i) {
+    for (int i = 0; i < power - 1; ++i) {
         num *= first;
     }
     return first;
@@ -243,7 +243,7 @@ double BivariatePolynomial::backSubstitute(double x, double y)
     for (int i = 0; i < this->degx; ++i) {
         for (int j = 0; j < this->degy; ++j) {
             if(this->MatrixRepresentation[i][j] != 0)
-                sum += this->MatrixRepresentation[i][j]*(exp(x, i) + exp(y, j));
+                sum += this->MatrixRepresentation[i][j]*(exp(x, i) * exp(y, j));
         }
     }
     return sum;

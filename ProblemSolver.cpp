@@ -389,11 +389,10 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
 bool ProblemSolver::substituteChangeOfVariable(ChangeOfVariableCoefficients * coefs)
 {
     for (int j = 0; j < this->numOfSolutions; ++j) {
-        double x = this->Solutions[j]->getX();
         double y = this->Solutions[j]->getY();
+        double x = this->Solutions[j]->getX();
         int mul = this->Solutions[j]->getMultiplicity();
-        x = (x - coefs->t2)/coefs->t1;
-        y = (y - coefs->t4)/coefs->t3;
+        y = (coefs->t2 - y * coefs->t4)/(y * coefs->t3 - coefs->t1);
         delete this->Solutions[j];
         this->Solutions[j] = new Solution(x, y, mul);
     }
