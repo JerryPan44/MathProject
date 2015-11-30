@@ -16,6 +16,8 @@ ProblemSolver.h		:	class containing every necessary funtion for the solution
 
 Solution.h		:	class for the final solution (y,x,multiplicity)
 
+
+
 the matrices are printed inverted (the biggest power is in the smallest position) but are actually in memory in reverse the biggest power in the biggest position.
 
 The project is compiled with terminal command : make
@@ -45,6 +47,9 @@ tested input polynomials :
 
 1+x^2-y
 -8+x^2+5*y
+
+1+2*x+y*x^2+5*y*x^3+36*y^2*x^3
+-3+9*y+4*x^2+64*y^2
 
 
 The project was developed by :

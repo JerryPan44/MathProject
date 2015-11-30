@@ -200,18 +200,18 @@ int BivariatePolynomial::getCoefFromPolynomial(int & pos, char * polstr)
     }
 
     char * strCoef;
-    while (isdigit(polstr[pos + count])) {
+    while (isdigit(polstr[pos + count]) || polstr[pos +count] == 'e' || polstr[pos +count] == '.') {
         count++;
     }
     strCoef = new char[count+1];
     strCoef[count] = '\0';
     count = 0;
-    while (isdigit(polstr[pos + count])) {						//else read the digits one by one and return them as an int
+    while (isdigit(polstr[pos + count]) || polstr[pos +count] == 'e' || polstr[pos +count] == '.') {						//else read the digits one by one and return them as an int
         strCoef[count] = polstr[pos + count];
         count++;
     }
     pos +=count-1;
-    int k = atoi(strCoef);
+    int k = atof(strCoef);
     delete []strCoef;
     return k;
 }

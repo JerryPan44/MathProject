@@ -13,6 +13,7 @@
 #include "Matrix.h"
 #include "ProblemSolver.h"
 #include "ChangeOfVariableCoefficients.h"
+#include <cmath>
 using namespace std;
 using namespace Eigen;
 unsigned int getHiddenMaxDeg(SylvesterMatrix * SM, BivariatePolynomial * Bp1, BivariatePolynomial * Bp2);
@@ -76,10 +77,10 @@ void solveGeneratedProblem(int d1, int d2, int B)						//Generate and Solve
     SylvesterPolynomial * SP = new SylvesterPolynomial(SpDeg, SM->getRowDimension());
     SP->SMatrixToSPolynomial(SM);
     MyMatrix * m = new MyMatrix(SM->getRowDimension(), 1);      				//generate random matrix of 1 column (vector v)
-    ProblemSolver * PS = new ProblemSolver(SP, B, SP->getDegree());
-    PS->Solve();
-    backSubstituteSols(Bp1, Bp2, PS);
-    SM->changeOfVariable();
+    ProblemSolver * PS = new ProblemSolver(SP, B, SP->getDegree());     //create a problem solver class
+    PS->Solve();                                            //solve
+    backSubstituteSols(Bp1, Bp2, PS);                       //replace sols and check if they are indeed sols
+    SM->changeOfVariable();                                     //change of variable logic
     changeOfVariable(Bp1, Bp2, SM, PS, B);
     cleanResources(PS, SM, Bp1, Bp2, SP, m);        						//clean resources
 }
@@ -116,12 +117,12 @@ void solveProblem(char * filename, int d1, int d2,int B)
 bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)		//7)
 {
     int numSols = PS->getNumOfSols();
-    for (int i = 0; i < numSols; ++i) {
+    for (int i = 0; i < numSols; ++i) {                             //for all the solutions
         Solution * sol = PS->getSolution(i);
-        if(sol->getMultiplicity() == 1) {
+        if(sol->getMultiplicity() == 1) {                           //if multiplicity of solution is 1 back substitute the sols and check if they nullify the polynomials
             double res1 = Bp1->backSubstitute(sol->getX(), sol->getY());
             double res2 = Bp2->backSubstitute(sol->getX(), sol->getY());
-            if(res1 < 0.000001 && res1 < 0.000001)
+            if(abs(res1) < 0.000001 && abs(res2) < 0.000001)
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
             else
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED : "<<res1<<" , "<<res2<<endl;
@@ -132,7 +133,7 @@ void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Sylv
 {
     SylvesterPolynomial * SP;
     ProblemSolver * PSNew;
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i) {                                       //try to change variable with random t1,t2,t3,t4 up to 3 times until you find a better k
         SylvesterMatrix * SmTemp = new SylvesterMatrix(*SM);
         SP = new SylvesterPolynomial(SmTemp->getHiddenDeg(), SmTemp->getRowDimension());
         SmTemp->changeOfVariable();
