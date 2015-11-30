@@ -183,7 +183,7 @@ bool ProblemSolver::solveGeneralizedEigenProblem()		//3)
                                           -(Eivals(i, 0)/Eivals(i, 2)), multiplicity[i]);
         this->Solutions[i]->PrintSolution();
     }
-    return false;
+    return true;
 }
 /// if last pos of eivalue has 0 denominator or eivec cannot be normalized 0 on last pos return true else return false
 bool ProblemSolver::GeneralizedNoSolution(MatrixXd Eivecs, MatrixXd Eivals, int i, int * Multiplicity)
