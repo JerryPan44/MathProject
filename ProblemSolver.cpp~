@@ -1,6 +1,5 @@
 #include "ProblemSolver.h"
 #include <lapacke.h>
-#include <cmath>
 #define NUM_OF_TRIES 3
 using namespace std;
 using namespace Eigen;
@@ -25,25 +24,17 @@ ProblemSolver::ProblemSolver(SylvesterPolynomial * SP, unsigned int B, unsigned 
 
 ProblemSolver::~ProblemSolver()
 {
-    for (int i = 0; i < this->numOfSolutions; ++i) {
-        delete this->Solutions[i];
-    }
+
 }
-// get determinant of the sylvester Matrix for a random Y0 3 times if 0 for all the Y0 means that probably the system has no solution
+
 bool ProblemSolver::isUnsolvable()
 {									//Judge if system can be solved and answer to 5)[BONUS] 
     
     srand(time(NULL));
     MatrixXd mI(this->dimensionM, this->dimensionM);
-<<<<<<< HEAD
-    for (int i = 0; i < NUM_OF_TRIES; ++i) {
-        int randomY0 = rand() % 100 - 50;
-        MatrixXd m = MatrixXd::Zero(this->dimensionM, this->dimensionM);
-=======
     for (int i = 0; i < NUM_OF_TRIES; ++i) {				//Reapeat up to 3 times (NUM_OF_TRIES=3)
         int randomY0 = rand() % 100 - 50;				//Pick a random number over {-50,...,50}
         MatrixXd m(this->dimensionM, this->dimensionM);
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
         for (int j = 0; j < this->degree; ++j) {
             int powerY0 = randomY0;
             powerOf(powerY0, j);					//(Y0)^j
@@ -52,17 +43,13 @@ bool ProblemSolver::isUnsolvable()
         }
         powerOf(randomY0, this->degree);				//(Y0)^(degree)
         m += this->Md * randomY0;
-<<<<<<< HEAD
-        if(m.determinant() != 0)
-            return false;
-=======
         if(m.determinant() == 0)					//det [m(Y0)]
             return true;						//Edw nomizw prepei na allaksei (des Allages-Protaseis)
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
 //        cout<<"m is : "<<endl<<m<<endl<<endl;
 //        cout<<"determinant is : "<<m.determinant()<<endl;
     }
-    return true;
+    return false;
+
 }
 
 void ProblemSolver::powerOf(int &  Num, int power)			//Compute Num^(power)
@@ -73,7 +60,7 @@ void ProblemSolver::powerOf(int &  Num, int power)			//Compute Num^(power)
         Num *= Num;
     }
 }
-//solve the problem
+
 bool ProblemSolver::Solve()
 {									//Judge if system is: solved, unsolvable, a standard eigenproblem, a generalised eigenproblem
     if(this->isUnsolvable())						//System cannot be solved
@@ -113,18 +100,12 @@ bool ProblemSolver::solveStandardEigenProblem()				//Solve with the standard eig
     }
     return true;
 }
-//no solution if imaginary part is not zero and eivec cannot be normalized
+
 bool ProblemSolver::StandardNoSolution(MatrixXcd Eivecs, MatrixXcd Eivals, int i, int * Multiplicity)
-<<<<<<< HEAD
-{
-    if(Eivecs(Eivecs.rows() - 1, i).real() == 0 && Eivals(Eivecs.rows() - 1, i).imag() == 0 && Multiplicity[i] == 1)                  //no solution
-        return true;
-=======
 {												//judge if Generalised eigenproblem has no solution given i postition
 
     if(Eivecs(Eivecs.rows() - 1, i).real() == 0 && Eivals(Eivecs.rows() - 1, i).imag() == 0 && Multiplicity[i] == 1)
         return true;										//eigenvalue cannot be canonized
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
     if(isCloseToZero(Eivals(i).imag()))
         return false;										//if the eigenvalue has imaginary part < 10^-3
     return true;
@@ -132,7 +113,7 @@ bool ProblemSolver::StandardNoSolution(MatrixXcd Eivecs, MatrixXcd Eivals, int i
 
 bool ProblemSolver::isCloseToZero(double Num)								//A number is considered closed enough to zero if it is < 10^-3
 {
-    if(abs(Num) < 0.001)
+    if(Num < 0.001)
         return true;
     return false;
 }
@@ -147,26 +128,16 @@ bool ProblemSolver::computeCompanion()									//Create and compute the Companio
         for (int j = 0; j < i+1; ++j) {
             this->Companion.block(dimensionM*i,dimensionM*j, dimensionM, dimensionM) = zeroes;		//first i blocks are zero matrices
         }
-<<<<<<< HEAD
-        this->Companion.block(dimensionM*i,dimensionM*(i+1), dimensionM, dimensionM) = identity;        //identity on the right of the diagonal 0 everywhere else
-=======
         this->Companion.block(dimensionM*i,dimensionM*(i+1), dimensionM, dimensionM) = identity;	//the (i+1)-th block is an identity matrix
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
         for (int j = i + 2; j < degree ; ++j) {
             this->Companion.block(dimensionM*i,dimensionM*j, dimensionM, dimensionM) = zeroes;		//the rest are zero matrices
         }
     }
     for (int i = 0; i < degree; ++i) {
         MatrixXd mI(dimensionM, dimensionM);
-<<<<<<< HEAD
-        this->initMI(mI, this->sylvesterPolynomial->getMd(i), dimensionM);          //get ith degree matrix
-        this->Companion.block(dimensionM*(degree - 1), dimensionM*i, dimensionM, dimensionM) = - (this->Md.inverse() * mI);         //last row of companion matrix
-    }
-=======
         this->initMI(mI, this->sylvesterPolynomial->getMd(i), dimensionM);				//Create Mi, i=0,1,...
         this->Companion.block(dimensionM*(degree - 1), dimensionM*i, dimensionM, dimensionM) = - (this->Md.inverse() * mI);
     }													//Last row of blocks has -Md^(-1)*Mi
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
     return true;
 }
 
@@ -204,17 +175,12 @@ bool ProblemSolver::solveGeneralizedEigenProblem()					//Solve with the genralis
                                           -(Eivals(i, 0)/Eivals(i, 2)), multiplicity[i]);	//add solutions
         this->Solutions[i]->PrintSolution();							//and print them
     }
-    return true;
+    return false;
 }
-/// if last pos of eivalue has 0 denominator or eivec cannot be normalized 0 on last pos return true else return false
+
 bool ProblemSolver::GeneralizedNoSolution(MatrixXd Eivecs, MatrixXd Eivals, int i, int * Multiplicity)
-<<<<<<< HEAD
-{
-    if(Eivals(i, 2) == 0 || abs(Eivals(i,2)) < 0.00001)
-=======
 {											//judge if Generalised eigenproblem has no solution given i postition
     if(Eivals(i, 2) == 0 || Eivals(i,2) < 0.00001)					//eigenvalue is 0 or close to 0 (<10^-5)
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
         return true;
     if(Eivecs(Eivecs.rows() - 1, i) == 0 && Multiplicity[i] == 1)			//eigenvector cannot be canonized
         return true;
@@ -279,13 +245,8 @@ bool ProblemSolver::computeL1(MatrixXd & L1)
     }
     return true;
 }
-<<<<<<< HEAD
-//initialize Md
-bool ProblemSolver::initMd(double ** tempMD, int matrixDimensions)
-=======
 
 bool ProblemSolver::initMd(double ** tempMD, int matrixDimensions)				//Intitialize Md matrix
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
 {
     if(tempMD == NULL)										//no matrix given
         return false;
@@ -309,13 +270,8 @@ bool ProblemSolver::initMI(MatrixXd& mI, double ** tempMD, int matrixDimensions)
     }
     return true;
 }
-<<<<<<< HEAD
-//get max/min singular value if min is 0 then isInvertible = false
-double ProblemSolver::computeStateIndicator()
-=======
 
 double ProblemSolver::computeStateIndicator()					//Compute k (state indicator of Md)
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
 {
     JacobiSVD<MatrixXd> svd(Md, ComputeFullU);
     JacobiSVD<MatrixXd>::SingularValuesType svds = svd.singularValues();
@@ -348,7 +304,7 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
     bool ret = false;
     int numRows = Eivals.rows() - 1;
     int numCols = Eivecs.cols() - 1;
-    for (int j = 0; j < Eivals.rows(); ++j) {           //for each eigen value if it is repeated resize the eivecs and eivals matrix and remove the duplicates
+    for (int j = 0; j < Eivals.rows(); ++j) {
         for (int l = 0; l < Eivals.rows(); ++l) {
             if((Eivals(j).real() == Eivals(l).real() && Eivals(j).imag() == Eivals(l).imag() && l != j)) {			//if evals(i)==eivals(j) with i =/= j
                 Multiplicity[j]++;												//increase multiplicity by 1
@@ -365,18 +321,6 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
         }    
     }
     for (int j = 0; j < Eivals.rows(); ++j) {
-<<<<<<< HEAD
-        if(this->StandardNoSolution(Eivecs, Eivals, j, Multiplicity))           //if the eivector and eigenvalues do not gratify the constraints we have set for them remove the solution
-        {
-            if( j < numRows )
-                Eivals.block(j, 0, numRows - j, Eivals.cols()) = Eivals.block(j + 1, 0, numRows - j, Eivals.cols());
-            if( j < numCols )
-                Eivecs.block(0,j, Eivecs.rows(), numCols - j) = Eivecs.block(0,j+1,Eivecs.rows(),numCols-j);
-            Eivals.conservativeResize(numRows,Eivals.cols());
-            Eivecs.conservativeResize(Eivecs.rows(),numCols);
-            numRows = Eivals.rows() - 1;
-            numCols = Eivecs.cols() - 1;
-=======
         if(this->StandardNoSolution(Eivecs, Eivals, j, Multiplicity))								//Eigenvalue produces no solution
         {															//in standard eigenproblem
             if( j < numRows )													//
@@ -387,13 +331,12 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
             Eivecs.conservativeResize(Eivecs.rows(),numCols);									//
             numRows = Eivals.rows() - 1;											//
             numCols = Eivecs.cols() - 1;											//
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
             continue;
         }
     }
     return ret;
 }
-///Same constraint logic as the standard eigen problem
+
 bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eivecs, Eigen::MatrixXd & Eivals, int * Multiplicity)
 {						//Eliminate eigenvalues and eigenvectors with multiplicity > 1 in Generalized eigenproblem
     bool ret = false;
@@ -431,20 +374,6 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
     }
     return ret;
 }
-<<<<<<< HEAD
-///get the old y back by replacing with z (y = t1z+t2/t3x+t4)
-bool ProblemSolver::substituteChangeOfVariable(ChangeOfVariableCoefficients * coefs)			//4)
-{
-    for (int j = 0; j < this->numOfSolutions; ++j) {
-        double y = this->Solutions[j]->getY();
-        double x = this->Solutions[j]->getX();
-        int mul = this->Solutions[j]->getMultiplicity();
-//        y = (coefs->t2 - y * coefs->t4)/(y * coefs->t3 - coefs->t1);
-        y = (coefs->t1 * y + coefs->t2) / (coefs->t3 * y + coefs->t4);
-        delete this->Solutions[j];
-        this->Solutions[j] = new Solution(x, y, mul);
-        this->Solutions[j]->PrintSolution();
-=======
 
 bool ProblemSolver::substituteChangeOfVariable(ChangeOfVariableCoefficients * coefs)			//Change y
 {
@@ -455,6 +384,5 @@ bool ProblemSolver::substituteChangeOfVariable(ChangeOfVariableCoefficients * co
         y = (coefs->t2 - y * coefs->t4)/(y * coefs->t3 - coefs->t1);					//y'=(t2-y*t4)/(y*t3-t1)
         delete this->Solutions[j];
         this->Solutions[j] = new Solution(x, y, mul);							//add x,y',multiplicity
->>>>>>> 81e7bef27edd29a5a67a06fa795ba57a4a3a743b
     }
 }
