@@ -2,7 +2,7 @@
 #include "Polynomial.h"
 using namespace std;
 
-Polynomial::Polynomial()
+Polynomial::Polynomial()								//Polynomila class constructor (nothing given)
 {
     this->degree=-1;
 }
@@ -76,7 +76,7 @@ void Polynomial::multiply(Polynomial*& RetPol, int factor)				//multiply the pol
     RetPol = new Polynomial(this->degree, this->matrixPolynomial);
     RetPol->multiply(factor);
 }
-void Polynomial::multiply(int factor)
+void Polynomial::multiply(int factor)							//multiply polynomial with a factor(integer)
 {
     for (int i = 0; i < this->degree + 1; ++i) {
         this->matrixPolynomial[i] *= factor;
@@ -159,7 +159,7 @@ bool Polynomial::multiplyPolynomial(Polynomial * p2)
 }
 
 void Polynomial::multiplyPolynomials(Polynomial * p1, Polynomial * p2, Polynomial * & resultPol)
-{
+{										//multiply two polynomials
     int size1 = p1->getDegree() + 1;
     int size2 = p2->getDegree() + 1;
     int * newPol = new int [size1 + size2 - 1];

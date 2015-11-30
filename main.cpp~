@@ -93,11 +93,10 @@ void solveProblem(char * filename, int d1, int d2,int B)
     int systemDegree=0;
     BivariatePolynomial * Bp1 = new BivariatePolynomial(polynomial1, d1);			//initialize Bp1, Bp2
     BivariatePolynomial * Bp2 = new BivariatePolynomial(polynomial2, d2);
-    SylvesterMatrix * SM = new SylvesterMatrix(Bp1, Bp2);					//construct the sylvester matrix from Bp1 and Bp2
+    SylvesterMatrix * SM = new SylvesterMatrix(Bp1, Bp2);					//construct the Sylvester matrix from Bp1 and Bp2
     int SpDeg = getHiddenMaxDeg(SM, Bp1, Bp2);
-    SylvesterPolynomial * SP = new SylvesterPolynomial(SM->getHiddenDeg(), SM->getRowDimension());	//sylvester polynomial of sylvester matrix hidden variable degree
-    SP->SMatrixToSPolynomial(SM);								//convert Sylvester Matrix to sylvester polynomial
-    SP->Print();
+    SylvesterPolynomial * SP = new SylvesterPolynomial(SM->getHiddenDeg(), SM->getRowDimension());//Sylvester polynomial of sylvester matrix hidden variable degree
+    SP->SMatrixToSPolynomial(SM);								//convert Sylvester Matrix to Sylvester polynomial
     MyMatrix * m = new MyMatrix(SM->getRowDimension(), 1);					//random matrix of 1 column (the vector v)
 /*  m->generate();
     cout<<"multiplying Sylvester Matrix with"<<endl;
@@ -106,42 +105,42 @@ void solveProblem(char * filename, int d1, int d2,int B)
     SM->multiply(m, result);                    						//multiply the sylvester matrix with the random vector v
     result->Print();                           							//print the result
     //Project 2 code */
-    ProblemSolver * PS = new ProblemSolver(SP, B, SP->getDegree());
-    PS->Solve();
-    backSubstituteSols(Bp1, Bp2, PS);
-    changeOfVariable(Bp1, Bp2, SM, PS, B);
+    ProblemSolver * PS = new ProblemSolver(SP, B, SP->getDegree());				//Computes k, Md and finds if eigenproblem is standard or generalised
+    PS->Solve();										//fint if system can be solved and solve it
+    backSubstituteSols(Bp1, Bp2, PS);								//Compute polynomials for computed solutions of Solve()
+    changeOfVariable(Bp1, Bp2, SM, PS, B);							//Change of variable as asked in 4)
 //    delete result;
     cleanResources(PS, SM, Bp1, Bp2, SP, m);							//clean resources
 }
 
-bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)
+bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)//Compute polynomials for computed solutions
 {
-    int numSols = PS->getNumOfSols();
-    for (int i = 0; i < numSols; ++i) {
+    int numSols = PS->getNumOfSols();								
+    for (int i = 0; i < numSols; ++i) {								//For every solution
         Solution * sol = PS->getSolution(i);
         if(sol->getMultiplicity() == 1) {
-            int res1 = Bp1->backSubstitute(sol->getX(), sol->getY());
-            int res2 = Bp2->backSubstitute(sol->getX(), sol->getY());
-            if(res1 < 0.000001 && res1 < 0.000001)
+            double res1 = Bp1->backSubstitute(sol->getX(), sol->getY());			//Compute the value of the polynomial Bp1
+            double res2 = Bp2->backSubstitute(sol->getX(), sol->getY());			//Compute the value of the polynomial Bp2
+            if(res1 < 0.000001 && res1 < 0.000001)						//Are the values over 10^-6
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
             else
-                cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED"<<endl;
+                cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED : "<<res1<<" , "<<res2<<endl;
         }
     }
 }
 void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, SylvesterMatrix * SM, ProblemSolver * PS, int B)
-{
+{												//Change of variable as askrd in 4)
     SylvesterPolynomial * SP;
     ProblemSolver * PSNew;
     for (int i = 0; i < 3; ++i) {
         SylvesterMatrix * SmTemp = new SylvesterMatrix(*SM);
         SP = new SylvesterPolynomial(SmTemp->getHiddenDeg(), SmTemp->getRowDimension());
-        SmTemp->changeOfVariable();
-        SP->SMatrixToSPolynomial(SmTemp);                           				//convert Sylvester Matrix to sylvester polynomial
+        SmTemp->changeOfVariable();								//Pick 4 random t(i) in Sylvester marix
+        SP->SMatrixToSPolynomial(SmTemp);                           				//Convert Sylvester Matrix to sylvester polynomial
 //        SP->Print();
-        PSNew = new ProblemSolver(SP, B , SP->getDegree());
+        PSNew = new ProblemSolver(SP, B , SP->getDegree());					//Compute Md'
 //        cout<<"OLD K : "<<PS->getStateIndicator()<<" NEW K : "<<PSNew->getStateIndicator()<<endl<<endl;
-        if(PS->getStateIndicator() > PSNew->getStateIndicator())				//Check for variable change
+        if(PS->getStateIndicator() > PSNew->getStateIndicator())				//Check for variable change (k(Md) > k'(Md'))
         {
             cout<<"************SOLVING WITH CHANGE OF VARIABLE**************"<<endl;
             PSNew->Solve();
@@ -157,7 +156,7 @@ void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Sylv
     }
 }
 void cleanResources(ProblemSolver * PS, SylvesterMatrix * SM, BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, SylvesterPolynomial * SP, MyMatrix * m)
-{
+{												//Delete created resources
     delete PS;
     delete SM;
     delete Bp1;

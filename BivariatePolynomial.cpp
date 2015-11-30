@@ -220,7 +220,7 @@ BivariatePolynomial::~BivariatePolynomial()
     delete []this->MatrixRepresentation;
 }
 
-double BivariatePolynomial::exp(double num, double power)
+double BivariatePolynomial::exp(double num, double power)				//compute (num)^(power)
 {
     if(power == 0)
         return 1;
@@ -231,7 +231,7 @@ double BivariatePolynomial::exp(double num, double power)
     return num;
 }
 
-double BivariatePolynomial::backSubstitute(double x, double y)
+double BivariatePolynomial::backSubstitute(double x, double y)				//substitude x,y in polynomial
 {
     double sum = 0;
     for (int i = 0; i < this->degy + 1; ++i) {

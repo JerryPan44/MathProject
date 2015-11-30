@@ -14,7 +14,7 @@ int SylvesterMatrix::max(int d1, int d2)							//Find max
 }
 
 bool SylvesterMatrix::changeOfVariable()
-{
+{								//Pick 4 random t(i)
     int t1, t2, t3, t4;
     getRandom(t1);
     getRandom(t2);
