@@ -374,7 +374,7 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
 }
 
 ///get the old y back by replacing with z (y = t1z+t2/t3x+t4)
-bool ProblemSolver::substituteChangeOfVariable(ChangeOfVariableCoefficients * coefs)			//Change y
+bool ProblemSolver::substituteChangeOfVariable(ChangeOfVariableCoefficients * coefs)			//4)
 {
     for (int j = 0; j < this->numOfSolutions; ++j) {
         double y = this->Solutions[j]->getY();								//get x

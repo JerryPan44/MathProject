@@ -200,18 +200,18 @@ int BivariatePolynomial::getCoefFromPolynomial(int & pos, char * polstr)
     }
 
     char * strCoef;
-    while (isdigit(polstr[pos + count]) || polstr[pos +count] == 'e' || polstr[pos +count] == '.') {
+    while (isdigit(polstr[pos + count])) {
         count++;
     }
     strCoef = new char[count+1];
     strCoef[count] = '\0';
     count = 0;
-    while (isdigit(polstr[pos + count]) || polstr[pos +count] == 'e' || polstr[pos +count] == '.') {						//else read the digits one by one and return them as an int
+    while (isdigit(polstr[pos + count])) {						//else read the digits one by one and return them as an int
         strCoef[count] = polstr[pos + count];
         count++;
     }
     pos +=count-1;
-    int k = atof(strCoef);
+    int k = atoi(strCoef);
     delete []strCoef;
     return k;
 }
@@ -220,7 +220,7 @@ BivariatePolynomial::~BivariatePolynomial()
     delete []this->MatrixRepresentation;
 }
 
-double BivariatePolynomial::exp(double num, double power)
+double BivariatePolynomial::exp(double num, double power)				//compute (num)^(power)
 {
     if(power == 0)
         return 1;
@@ -231,7 +231,7 @@ double BivariatePolynomial::exp(double num, double power)
     return num;
 }
 
-double BivariatePolynomial::backSubstitute(double x, double y)
+double BivariatePolynomial::backSubstitute(double x, double y)				//substitude x,y in polynomial
 {
     double sum = 0;
     for (int i = 0; i < this->degy + 1; ++i) {
