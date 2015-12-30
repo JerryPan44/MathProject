@@ -2,10 +2,11 @@
 #include <lapacke.h>
 #include <cmath>
 #define NUM_OF_TRIES 3
+#define ERROR_MARGIN 0.00001
 using namespace std;
 using namespace Eigen;
 
-ProblemSolver::ProblemSolver(SylvesterPolynomial * SP, unsigned int B, unsigned int d):degree(d), mdIsInvertible(true), Solved(false)
+ProblemSolver::ProblemSolver(SylvesterPolynomial * SP, unsigned int B, unsigned int d):degree(d), mdIsInvertible(true), Solved(false), numOfSolutions(0)
 {														//Find Md type (non-singular,ill-consitioned) and if gen. or std eigenproblem
     this->sylvesterPolynomial = SP;
     computeUpperBound(B);											//compute 10^B (Upper Bound)
@@ -25,6 +26,8 @@ ProblemSolver::ProblemSolver(SylvesterPolynomial * SP, unsigned int B, unsigned 
 
 ProblemSolver::~ProblemSolver()
 {
+    if(this->numOfSolutions == 0)
+        return;
     for (int i = 0; i < this->numOfSolutions; ++i) {
         delete this->Solutions[i];
     }
@@ -105,9 +108,11 @@ bool ProblemSolver::solveStandardEigenProblem()				//Solve with the standard eig
 }
 
 //no solution if imaginary part is not zero and eivec cannot be normalized
-bool ProblemSolver::StandardNoSolution(MatrixXcd Eivecs, MatrixXcd Eivals, int i, int * Multiplicity)
+bool ProblemSolver::StandardNoSolution(MatrixXcd & Eivecs, MatrixXcd & Eivals, int i, int * Multiplicity)
 {												//judge if Generalised eigenproblem has no solution given i postition
-    if(Eivecs(Eivecs.rows() - 1, i).real() == 0 && Eivals(Eivecs.rows() - 1, i).imag() == 0 && Multiplicity[i] == 1)                  //no solution
+    if(abs(Eivals(i).real()) == INFINITY)
+        return true;
+    if(Eivecs(Eivecs.rows() - 1, i).real() == 0 && Eivecs(Eivecs.rows() - 1, i).imag() == 0 && Multiplicity[i] == 1)                  //no solution
         return true;										//eigenvalue cannot be canonized
     if(isCloseToZero(Eivals(i).imag()))
         return false;										//if the eigenvalue has imaginary part < 10^-3
@@ -129,12 +134,13 @@ bool ProblemSolver::computeCompanion()									//Create and compute the Companio
     MatrixXd zeroes = MatrixXd::Zero(dimensionM, dimensionM);						//zeroes is the zero matrix of dimM x dimM
     for (int i = 0; i < degree - 1; ++i) {								//For every row except the last	
         for (int j = 0; j < i+1; ++j) {
-            this->Companion.block(dimensionM*i,dimensionM*j, dimensionM, dimensionM) = zeroes;		//first i blocks are zero matrices
+            this->Companion.block(dimensionM*i, dimensionM*j, dimensionM, dimensionM) = zeroes;		//first i blocks are zero matrices
         }
-        this->Companion.block(dimensionM*i,dimensionM*(i+1), dimensionM, dimensionM) = identity;	//the (i+1)-th block is an identity matrix
+        this->Companion.block(dimensionM*i, dimensionM*(i+1), dimensionM, dimensionM) = identity;	//the (i+1)-th block is an identity matrix
         for (int j = i + 2; j < degree ; ++j) {
-            this->Companion.block(dimensionM*i,dimensionM*j, dimensionM, dimensionM) = zeroes;		//the rest are zero matrices
+            this->Companion.block(dimensionM*i, dimensionM*j, dimensionM, dimensionM) = zeroes;		//the rest are zero matrices
         }
+
     }
     for (int i = 0; i < degree; ++i) {
         MatrixXd mI(dimensionM, dimensionM);
@@ -204,12 +210,12 @@ bool ProblemSolver::computeL0(MatrixXd & L0)
     MatrixXd identity = - MatrixXd::Identity(dimensionM, dimensionM);				//identity is -Im (Intentity matrix)
     MatrixXd zeroes = MatrixXd::Zero(dimensionM, dimensionM);					//zeroes is a matrix with only zeroes
     for (int i = 0; i < degree - 1; ++i) {                          				//for every row except the last
-        L0.block(dimensionM*i,dimensionM*(i+1), dimensionM, dimensionM) = identity;         	//identity is on the block matrix after the diagonal
+        L0.block(dimensionM*i, dimensionM*(i+1), dimensionM, dimensionM) = identity;         	//identity is on the block matrix after the diagonal
         for (int j = 0; j < i + 1; ++j) {
-            L0.block(dimensionM*i,dimensionM*j, dimensionM, dimensionM) = zeroes;		//set to zero  before the identity
+            L0.block(dimensionM*i, dimensionM*j, dimensionM, dimensionM) = zeroes;		//set to zero  before the identity
         }
         for (int j = i + 2; j < degree; ++j) {
-            L0.block(dimensionM*i,dimensionM*j, dimensionM, dimensionM) = zeroes;   		//set to zero  after the diagonal
+            L0.block(dimensionM*i, dimensionM*j, dimensionM, dimensionM) = zeroes;   		//set to zero  after the diagonal
         }
     }
     for (int i = 0; i < degree; ++i) {								//The last row of blocks contains Mi, i= 1, 2, ...
@@ -302,16 +308,18 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
     int numCols = Eivecs.cols() - 1;
     for (int j = 0; j < Eivals.rows(); ++j) {           //for each eigen value if it is repeated resize the eivecs and eivals matrix and remove the duplicates
         for (int l = 0; l < Eivals.rows(); ++l) {
-            if((Eivals(j).real() == Eivals(l).real() && Eivals(j).imag() == Eivals(l).imag() && l != j)) {			//if evals(i)==eivals(j) with i =/= j
+            if((abs(Eivals(j).real() - Eivals(l).real()) < ERROR_MARGIN  && abs(Eivals(j).imag() - Eivals(l).imag()) < ERROR_MARGIN
+                && l != j)) {			//if evals(i)==eivals(j) with i =/= j
                 Multiplicity[j]++;												//increase multiplicity by 1
                 if( l < numRows )
                     Eivals.block(l, 0, numRows - l, Eivals.cols()) = Eivals.block(l + 1, 0, numRows - l, Eivals.cols());	//
                 if( l < numCols )												//
-                    Eivecs.block(0,l, Eivecs.rows(), numCols - l) = Eivecs.block(0,l+1,Eivecs.rows(),numCols-l);		//
+                    Eivecs.block(0, l, Eivecs.rows(), numCols - l) = Eivecs.block(0, l+1, Eivecs.rows(), numCols-l);		//
                 Eivals.conservativeResize(numRows,Eivals.cols());								//Deleting the extra eigenvalue in Eivals
                 Eivecs.conservativeResize(Eivecs.rows(),numCols);								//and the extra eigenvector in Eivecs
                 numRows = Eivals.rows() - 1;											//
                 numCols = Eivecs.cols() - 1;											//
+                --l;
                 ret = true;
             }
         }    
@@ -319,6 +327,9 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
     for (int j = 0; j < Eivals.rows(); ++j) {
         if(this->StandardNoSolution(Eivecs, Eivals, j, Multiplicity))           //if the eivector and eigenvalues do not gratify the constraints we have set for them remove the solution
         {
+            for (int i = j; i < Eivals.rows(); ++i) {
+                Multiplicity[i] = Multiplicity[i+1];
+            }
             if( j < numRows )													//
                 Eivals.block(j, 0, numRows - j, Eivals.cols()) = Eivals.block(j + 1, 0, numRows - j, Eivals.cols());		//
             if( j < numCols )													//
@@ -326,7 +337,8 @@ bool ProblemSolver::removeSolsWithMultiplicityStandard(Eigen::MatrixXcd & Eivecs
             Eivals.conservativeResize(numRows,Eivals.cols());									//and the eigenvector
             Eivecs.conservativeResize(Eivecs.rows(),numCols);									//
             numRows = Eivals.rows() - 1;											//
-            numCols = Eivecs.cols() - 1;											//
+            numCols = Eivecs.cols() - 1;
+            --j;
             continue;
         }
     }
@@ -341,16 +353,17 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
     int numCols = Eivecs.cols() - 1;
     for (int j = 0; j < Eivals.rows(); ++j) {
         for (int l = 0; l < Eivals.rows(); ++l) {
-            if(Eivals(j,0) == Eivals(l,0) && Eivals(j,2) == Eivals(l,2) && l != j ) {						//if evals(i)==eivals(j) with i =/= j
+            if(abs((Eivals(j,0) / Eivals(j,2) - Eivals(l,0) / Eivals(l,2))) < ERROR_MARGIN  && l != j) {						//if evals(i)==eivals(j) with i =/= j
                 Multiplicity[j]++;												//increase multiplicity by 1
                 if( l < numRows )
                     Eivals.block(l, 0, numRows - l, Eivals.cols()) = Eivals.block(l + 1, 0, numRows - l, Eivals.cols());	//
                 if( l < numCols )												//
                     Eivecs.block(0,l, Eivecs.rows(), numCols - l) = Eivecs.block(0,l+1,Eivecs.rows(),numCols-l);		//
-                Eivals.conservativeResize(numRows,Eivals.cols());								//Deleting the extra eigenvalue in Eivals
-                Eivecs.conservativeResize(Eivecs.rows(),numCols);								//and the extra eigenvector in Eivecs
+                Eivals.conservativeResize(numRows, Eivals.cols());								//Deleting the extra eigenvalue in Eivals
+                Eivecs.conservativeResize(Eivecs.rows(), numCols);								//and the extra eigenvector in Eivecs
                 numRows = Eivals.rows() - 1;											//
                 numCols = Eivecs.cols() - 1;											//
+                --l;
                 ret = true;
             }
         }
@@ -367,6 +380,7 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
             Eivecs.conservativeResize(Eivecs.rows(),numCols);									//
             numRows = Eivals.rows() - 1;											//
             numCols = Eivecs.cols() - 1;											//
+            --j;
             continue;
         }
     }

@@ -34,12 +34,18 @@ class ProblemSolver
     bool LapackeSolveGeneralizedEigenProblem(Eigen::MatrixXd& A, Eigen::MatrixXd & B, Eigen::MatrixXd& Eivecs, Eigen::MatrixXd& Eivals);
     bool isUnsolvable();
     bool GeneralizedNoSolution(Eigen::MatrixXd Eivecs, Eigen::MatrixXd Eivals, int i, int *);
-    bool StandardNoSolution(Eigen::MatrixXcd Eivecs, Eigen::MatrixXcd Eivals, int i, int *);
+    bool StandardNoSolution(Eigen::MatrixXcd & Eivecs, Eigen::MatrixXcd & Eivals, int i, int *);
     void powerOf(int& Num, int power);
     bool isCloseToZero(double Num);
     bool removeSolsWithMultiplicityStandard(Eigen::MatrixXcd &, Eigen::MatrixXcd &, int * );
     bool removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd &, Eigen::MatrixXd &, int * );
 public:
+
+    bool getMdIsInvertible()
+    {
+        return this->mdIsInvertible;
+    }
+
     double getStateIndicator()
     {
         return k;
@@ -48,6 +54,7 @@ public:
     {
         return Md;
     }
+
     ProblemSolver(SylvesterPolynomial *, unsigned int, unsigned int);
     ~ProblemSolver();
     bool Solve();
@@ -55,6 +62,7 @@ public:
     {
         return this->numOfSolutions;
     }
+
     bool substituteChangeOfVariable(ChangeOfVariableCoefficients *);
     Solution * getSolution(int i)
     {

@@ -47,10 +47,10 @@ TEST_F(SylvesterMatrixTests, testInitPolynomialPower)
 }
 TEST_F(SylvesterMatrixTests, TestChangeOfVariableBody)
 {
-//    SM->Print();
+    SM->Print();
     SM->coefs = new ChangeOfVariableCoefficients(1, 2, 3, 4);
 
     EXPECT_EQ(true, SM->changeOfVariableBody());
-//    SM->Print();
+    SM->Print();
 
 }

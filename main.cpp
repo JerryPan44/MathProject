@@ -141,7 +141,8 @@ void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Sylv
 //        SP->Print();
         PSNew = new ProblemSolver(SP, B , SP->getDegree());					//Compute Md', k'(state indicator)
 //        cout<<"OLD K : "<<PS->getStateIndicator()<<" NEW K : "<<PSNew->getStateIndicator()<<endl<<endl;
-        if(PS->getStateIndicator() > PSNew->getStateIndicator())				//Check for variable change (k(Md) > k'(Md'))
+        if(PS->getStateIndicator() > PSNew->getStateIndicator()
+           || (PS->getMdIsInvertible() == false && PSNew->getMdIsInvertible() == true))				//Check for variable change (k(Md) > k'(Md'))
         {
             cout<<"************SOLVING WITH CHANGE OF VARIABLE**************"<<endl;
             PSNew->Solve();									//Solve the new eigenproblem
