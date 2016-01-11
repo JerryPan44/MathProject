@@ -13,14 +13,14 @@ class SylvesterMatrix
     int hiddenDeg;
     Polynomial *** matrix;
     char hiddenVariable;
-    void assignXCol(BivariatePolynomial * Bp, int power, int * & resultM);
-    void assignYRow(BivariatePolynomial * Bp, int row, int * & resultM);
+    void assignXCol(BivariatePolynomial * Bp, int power, double * & resultM);
+    void assignYRow(BivariatePolynomial * Bp, int row, double * & resultM);
     void initMatrixWithHiddenX(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2);
     void initMatrixWithHiddenY(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2);
     void cleanPowerUps(Polynomial **&, int);
 public:
     ChangeOfVariableCoefficients * coefs;
-    static bool initPowerUps(Polynomial **& ,  int * , int, int);
+    static bool initPowerUps(Polynomial **& ,   double *  , int, int);
     ChangeOfVariableCoefficients * getCoefs()
     {
         return this->coefs;
@@ -55,7 +55,7 @@ public:
     void Print();
     void multiply(MyMatrix * m, SylvesterMatrix*& result);
     int getMatrixRowMaxDegree(int Row);
-    void assignZero(int deg, int*& temp);
+    void assignZero(int deg, double *& temp);
     void getRandom(int &);
     ~SylvesterMatrix();
 };

@@ -26,7 +26,7 @@ bool SylvesterMatrix::changeOfVariable()
 
 bool SylvesterMatrix::changeOfVariableBody()
 {
-    int p[2];
+    double p[2];
     p[0] = coefs->t2;
     p[1] = coefs->t1;
     Polynomial ** powerUp1;									//matrix with all the powers of t1*z+t2
@@ -52,7 +52,7 @@ void SylvesterMatrix::cleanPowerUps(Polynomial **& p, int size)
     }
     delete []p;
 }
-bool SylvesterMatrix::initPowerUps(Polynomial **&p, int * m, int sizeOfP, int sizeOfM)
+bool SylvesterMatrix::initPowerUps(Polynomial **&p, double * m, int sizeOfP, int sizeOfM)
 {
     p = new Polynomial*[sizeOfP];
     for (int i = 0; i < sizeOfP; ++i) {
@@ -109,7 +109,7 @@ void SylvesterMatrix::allocMatrix()
         this->matrix[i] = new Polynomial * [ColDimension];
     }
 
-    int * temp = new int[1];
+    double * temp = new double[1];
     temp[0] = 0;
     for (int i = 0; i < RowDimension; ++i) {
         for (int j = 0; j < ColDimension; ++j) {
@@ -119,11 +119,11 @@ void SylvesterMatrix::allocMatrix()
     delete []temp;
 
 }
-void SylvesterMatrix::assignXCol(BivariatePolynomial * Bp, int col, int * & resultM)		//return the column col in resultM of the BivariatePolynomial
+void SylvesterMatrix::assignXCol(BivariatePolynomial * Bp, int col, double * & resultM)		//return the column col in resultM of the BivariatePolynomial
 {
     int degy = Bp->getdegy();
-    int ** matrix = Bp->getMatrix();
-    resultM = new int[degy+1];
+    double ** matrix = Bp->getMatrix();
+    resultM = new double[degy+1];
     int k=0;
     for (int i = 0; i < degy + 1; ++i) {
         resultM[k] = matrix[i][col];
@@ -132,11 +132,11 @@ void SylvesterMatrix::assignXCol(BivariatePolynomial * Bp, int col, int * & resu
     //cout<<endl;
 }
 
-void SylvesterMatrix::assignYRow(BivariatePolynomial * Bp, int row, int * & resultM)		//return the row row in resultM of the BivariatePolynomial
+void SylvesterMatrix::assignYRow(BivariatePolynomial * Bp, int row, double * & resultM)		//return the row row in resultM of the BivariatePolynomial
 {
     int degx = Bp->getdegx();
-    int ** matrix = Bp->getMatrix();
-    resultM = new int[degx+1];
+    double ** matrix = Bp->getMatrix();
+    resultM = new double[degx+1];
     int k=0;
     for (int i = 0; i < degx + 1; ++i) {
         resultM[k] = matrix[row][i];
@@ -149,7 +149,7 @@ void SylvesterMatrix::assignYRow(BivariatePolynomial * Bp, int row, int * & resu
 void SylvesterMatrix::initMatrixWithHiddenY(BivariatePolynomial *Bp1, BivariatePolynomial *Bp2)         //Make the sylvester matrix with x as the hidden variable
 {
     allocMatrix();
-    int * temp, *ZeroTemp;
+    double * temp, *ZeroTemp;
     int degy2=Bp2->getdegy(),degy1=Bp1->getdegy(),degx1 = Bp1->getdegx(), degx2 = Bp2->getdegx();
     int totalDeg = Bp1->getMatrixDimension();
 
@@ -187,9 +187,9 @@ void SylvesterMatrix::initMatrixWithHiddenY(BivariatePolynomial *Bp1, BivariateP
 
 
 }
-void SylvesterMatrix::assignZero(int deg, int*& temp)
+void SylvesterMatrix::assignZero(int deg, double*& temp)
 {
-    temp = new int[deg+1];
+    temp = new double[deg+1];
     for (int i = 0; i < deg + 1; ++i) {
         temp[i] = 0;
     }
@@ -198,7 +198,7 @@ void SylvesterMatrix::assignZero(int deg, int*& temp)
 void SylvesterMatrix::initMatrixWithHiddenX(BivariatePolynomial *Bp1, BivariatePolynomial *Bp2)		//Make the sylvester matrix with x as the hidden variable
 {
     allocMatrix();
-    int * temp, *ZeroTemp;
+    double * temp, *ZeroTemp;
     int degy2=Bp2->getdegy(),degy1=Bp1->getdegy(),degx1 = Bp1->getdegx(), degx2 = Bp2->getdegx();
     int totalDeg = Bp1->getMatrixDimension();
 
@@ -284,6 +284,7 @@ SylvesterMatrix::SylvesterMatrix(SylvesterMatrix & SM)
     this->ColDimension = SM.getColDimension();
     this->RowDimension = SM.getRowDimension();
     this->hiddenDeg = SM.getHiddenDeg();
+    this->hiddenVariable = SM.getHiddenVariable();
     this->matrix = new Polynomial**[this->RowDimension];
     for (int i = 0; i < this->RowDimension; ++i) {
         this->matrix[i] = new Polynomial*[this->ColDimension];

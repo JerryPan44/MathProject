@@ -1,26 +1,32 @@
 #include <iostream>
 #include "Polynomial.h"
+#include <cmath>
+#include "SylvesterPolynomial.h"
+#include "eigen/Eigen/Dense"
+#include "eigen/Eigen/Core"
+#include "eigen/Eigen/SVD"
+#include "eigen/Eigen/Eigenvalues"
+#define ERROR_MARGIN 0.00001
 using namespace std;
+using namespace Eigen;
 
 Polynomial::Polynomial()								//Polynomila class constructor (nothing given)
 {
     this->degree=-1;
 }
-
-Polynomial::Polynomial(int deg, int matrix[])						//Create Polynomial from given matrix
+Polynomial::Polynomial(int deg, double * matrix)
 {
     this->degree = deg;
-    this->matrixPolynomial = new int[deg + 1];
+    this->matrixPolynomial = new double[deg + 1];
     for (int i = 0; i < deg+1; ++i) {
         this->matrixPolynomial[i] = matrix[i];
     }
-
 }
 
 Polynomial::Polynomial(int deg)								//Create Polynomial from given degree, zero matrix
 {
     this->degree = deg;
-    this->matrixPolynomial = new int[deg + 1];
+    this->matrixPolynomial = new double[deg + 1];
     for (int i = 0; i < deg+1; ++i) {
         this->matrixPolynomial[i] = 0;
     }
@@ -96,14 +102,14 @@ bool Polynomial::changeOfVariable(Polynomial ** p1, Polynomial ** p2, int deg)
 {
     if(this->degree == 0)
         return true;
-    int * newMatrix = new int [deg + 1];
+    double * newMatrix = new double [deg + 1];
     for (int k = 0; k < deg + 1; ++k) {
         newMatrix[k] = 0;
     }
     Polynomial * tempResult;
     for (int i = 0; i < this->degree + 1; ++i) {
         this->multiplyPolynomials(p1[i], p2[deg - i], tempResult);
-        int * tempMatrix = tempResult->getPolynomial();
+        double * tempMatrix = tempResult->getPolynomial();
         for (int j = 0; j < tempResult->getDegree() + 1; ++j) {
             newMatrix[j] += this->matrixPolynomial[i] * tempMatrix[j];
         }
@@ -115,8 +121,8 @@ bool Polynomial::changeOfVariable(Polynomial ** p1, Polynomial ** p2, int deg)
 Polynomial::Polynomial(Polynomial &p)
 {
     this->degree = p.getDegree();
-    this->matrixPolynomial = new int [this->degree + 1];
-    int * oldPol = p.getPolynomial();
+    this->matrixPolynomial = new double [this->degree + 1];
+    double * oldPol = p.getPolynomial();
     for (int i = 0; i < this->degree + 1; ++i) {
         this->matrixPolynomial[i] = oldPol[i];
     }
@@ -142,11 +148,11 @@ bool Polynomial::multiplyPolynomial(Polynomial * p2)
 {
     int size1 = this->degree + 1;
     int size2 = p2->getDegree() + 1;
-    int * newPol = new int [size1 + size2 - 1];
+    double * newPol = new double [size1 + size2 - 1];
     for (int k = 0; k < size1 + size2 - 1; ++k) {
         newPol[k] = 0;
     }
-    int * p2Matrix = p2->getPolynomial();
+    double * p2Matrix = p2->getPolynomial();
     for (int i = 0; i < size1; ++i) {
         for (int j = 0; j < size2; ++j) {
             //multiply
@@ -162,12 +168,12 @@ void Polynomial::multiplyPolynomials(Polynomial * p1, Polynomial * p2, Polynomia
 {										//multiply two polynomials
     int size1 = p1->getDegree() + 1;
     int size2 = p2->getDegree() + 1;
-    int * newPol = new int [size1 + size2 - 1];
+    double * newPol = new double [size1 + size2 - 1];
     for (int k = 0; k < size1 + size2 - 1; ++k) {
         newPol[k] = 0;
     }
-    int * p1Matrix = p1->getPolynomial();
-    int * p2Matrix = p2->getPolynomial();
+    double * p1Matrix = p1->getPolynomial();
+    double * p2Matrix = p2->getPolynomial();
     for (int i = 0; i < size1; ++i) {
         for (int j = 0; j < size2; ++j) {
             //multiply
@@ -175,4 +181,42 @@ void Polynomial::multiplyPolynomials(Polynomial * p1, Polynomial * p2, Polynomia
         }
     }
     resultPol = new Polynomial(p1->getDegree() + p2->getDegree(), newPol);
+}
+
+double * Polynomial::computeAndGetRoots(int & numOfRoots)
+{
+	MatrixXd companion = MatrixXd::Zero(this->degree, this->degree);
+	double temp[this->degree];
+	for(int i =0; i < this->degree; i++)
+	{
+		temp[i] = this->matrixPolynomial[i]/this->matrixPolynomial[this->degree];
+	}
+	for(int i =0; i < this->degree - 1; i++)
+	{
+		companion(i, i+1) = 1;
+	}
+	for(int i =0; i < this->degree; i++)
+	{
+		companion(this->degree -1, i) = -temp[i];
+	}
+    EigenSolver<MatrixXd> es(companion);				//Give created Companion matrix to eigen lib
+    MatrixXcd eivals = es.eigenvalues();				//Eigenvalues
+    double * roots;
+    numOfRoots = 0;
+	for(int i =0; i < eivals.rows(); i++)
+	{
+		if(abs(eivals(i).imag()) < ERROR_MARGIN)
+		{
+			numOfRoots++;
+		}
+	}
+	roots = new double[numOfRoots];
+	for(int i =0; i < eivals.rows(); i++)
+	{
+		if(abs(eivals(i).imag()) < ERROR_MARGIN)
+		{
+			roots[i] = eivals(i).real();
+		}
+	}
+	return roots;
 }

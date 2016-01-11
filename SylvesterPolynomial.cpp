@@ -14,6 +14,7 @@ SylvesterPolynomial::SylvesterPolynomial(int deg, int dimensions)						//Create 
 
 bool SylvesterPolynomial::SMatrixToSPolynomial(SylvesterMatrix * SM)						//Syl. Matrix to Syl. Polynomial 
 {
+    this->hiddenVar = SM->getHiddenVariable();
     if(SM->getColDimension() != this->matrixDimensions && SM->getRowDimension() != this->matrixDimensions)	//Dimensions don't match
         return  false;
     Polynomial *** PolMatrix = SM->getMatrix();

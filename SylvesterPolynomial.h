@@ -10,7 +10,12 @@ class SylvesterPolynomial
 {
     unsigned int degree, matrixDimensions;
     MyMatrix ** polynomial;
+    char hiddenVar;
 public:
+    char getHiddenVar()
+    {
+        return this->hiddenVar;
+    }
     SylvesterPolynomial(int deg, int dimensions);
     void AssignPolynomial(int, Polynomial *** );
     bool SMatrixToSPolynomial(SylvesterMatrix * SM);

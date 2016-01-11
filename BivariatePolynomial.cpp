@@ -49,12 +49,24 @@ void BivariatePolynomial::Print()							//Print polynomial
     }
 }
 
+BivariatePolynomial::BivariatePolynomial(int sD, double ** P){
+	matrixDimension = sD + 1;
+	this->MatrixRepresentation = new double*[matrixDimension];
+	for (int i = 0; i < matrixDimension; ++i) {
+		this->MatrixRepresentation[i] = new double[matrixDimension];
+		for (int j = 0; j < matrixDimension; ++j) {
+        		this->MatrixRepresentation[i][j] = P[i][j];
+        	}
+	}
+	InitDegs();
+}
+
 BivariatePolynomial::BivariatePolynomial(char polstr[], int sD)
 {
     matrixDimension = sD + 1;
-    this->MatrixRepresentation = new int*[matrixDimension];
+    this->MatrixRepresentation = new double*[matrixDimension];
     for (int i = 0; i < matrixDimension; ++i) {
-        this->MatrixRepresentation[i] = new int[matrixDimension];
+        this->MatrixRepresentation[i] = new double[matrixDimension];
         for (int j = 0; j < matrixDimension; ++j) {
             this->MatrixRepresentation[i][j] = 0;					//initialize matrix elements (== 0)
         }
@@ -67,9 +79,9 @@ BivariatePolynomial::BivariatePolynomial(int sD)					//Create random polynomial
 
     srand (time(NULL)+rand()%10000);
     matrixDimension = sD + 1;
-    this->MatrixRepresentation = new int*[matrixDimension];
+    this->MatrixRepresentation = new double*[matrixDimension];
     for (int i = 0; i < matrixDimension; ++i) {
-        this->MatrixRepresentation[i] = new int[matrixDimension];
+        this->MatrixRepresentation[i] = new double[matrixDimension];
         for (int j = 0; j < matrixDimension; ++j) {
             this->MatrixRepresentation[i][j] = (rand()%100) - 50;			//Matrix element range (-50,50)
         }
@@ -242,3 +254,37 @@ double BivariatePolynomial::backSubstitute(double x, double y)				//substitude x
     }
     return sum;
 }
+
+Polynomial * BivariatePolynomial::backSubstitute(double xy, char hiddenVar)				//substitude x,y in polynomial
+{
+	int size, hiddenSize;
+	if(hiddenVar == 'x')
+	{
+		size = this->degy + 1;
+		hiddenSize = this->degx + 1;
+	}
+	else
+	{
+		size = this->degx + 1;
+		hiddenSize = this->degy + 1;
+	}
+	double matrix[size];
+	int sum = 0;
+    for (int i = 0; i < size; ++i) {
+        sum = 0;
+        for (int j = 0; j < hiddenSize; ++j) {
+        	if(hiddenVar == 'x')
+        	{
+        		sum += this->MatrixRepresentation[i][j] * exp(xy, j);
+        	}
+        	else
+        	{
+        		sum += this->MatrixRepresentation[j][i] * exp(xy, j);
+        	}
+        }
+        matrix[i] += sum;
+    }
+	Polynomial * retPol = new Polynomial(size - 1, matrix);
+	return retPol;
+}
+

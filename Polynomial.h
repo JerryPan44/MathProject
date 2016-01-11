@@ -3,18 +3,18 @@
 
 class Polynomial
 {
-    int * matrixPolynomial;
+    double * matrixPolynomial;
     int degree;
 public:
     Polynomial();
-    Polynomial(int deg, int matrix[]);
+    Polynomial(int deg, double * matrix);
     Polynomial(int deg);
     Polynomial(Polynomial&);
     ~Polynomial()
     {
         delete []this->matrixPolynomial;
     }
-    int * getPolynomial()
+    double * getPolynomial()
     {
         return matrixPolynomial;
     }
@@ -30,7 +30,7 @@ public:
     bool powerUp(int power);
     bool multiplyPolynomial(Polynomial * p2);
     static void multiplyPolynomials(Polynomial * , Polynomial * , Polynomial * & );
-
+    double * computeAndGetRoots(int &);
 };
 
 #endif

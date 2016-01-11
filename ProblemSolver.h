@@ -12,6 +12,7 @@
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> MyMatrixXd;
 class ProblemSolver
 {
+    char hiddenVar;
     bool Solved;
     Solution ** Solutions;
     int numOfSolutions;
@@ -40,7 +41,10 @@ class ProblemSolver
     bool removeSolsWithMultiplicityStandard(Eigen::MatrixXcd &, Eigen::MatrixXcd &, int * );
     bool removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd &, Eigen::MatrixXd &, int * );
 public:
-
+    char getHiddenVar()
+    {
+    	return this->hiddenVar;
+    }
     bool getMdIsInvertible()
     {
         return this->mdIsInvertible;

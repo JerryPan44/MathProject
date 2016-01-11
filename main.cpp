@@ -13,13 +13,15 @@
 #include "Matrix.h"
 #include "ProblemSolver.h"
 #include "ChangeOfVariableCoefficients.h"
+#include "Interpolation.h"
 #include <cmath>
+#define ERROR_MARGIN 0.00001
 using namespace std;
 using namespace Eigen;
 unsigned int getHiddenMaxDeg(SylvesterMatrix * SM, BivariatePolynomial * Bp1, BivariatePolynomial * Bp2);
-
+void findFullSolutions(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS);
 void cleanResources(ProblemSolver * PS, SylvesterMatrix * , BivariatePolynomial * , BivariatePolynomial * , SylvesterPolynomial * , MyMatrix *   );
-void solveProblem(char * filename, int d1, int d2,int B);
+void solveProblem(char * filename, int d1, int d2,int B, bool fromPoints);
 void solveGeneratedProblem(int d1, int d2, int B);
 void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2,SylvesterMatrix * SM, ProblemSolver * PS, int B);
 bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS);
@@ -35,7 +37,17 @@ int main (int argc, char *argv[])
         perror("Wrong Number of agruments");							//Failed input arguments
         return 0;
     }
+    bool fromPoints = false;
     for (int i = 0; i < argc; ++i) {
+    	if(!strcmp(argv[i],"-points"))
+    	{
+    		fromPoints = true;
+    		if(read == true)
+    		{
+    			perror("error cant read from file and from points");
+    			return 0;
+    		}
+    	}
         if(!strcmp(argv[i], "-read"))
             read = true;									//Read from input
         if(read) {
@@ -61,7 +73,7 @@ int main (int argc, char *argv[])
     if(generate)
         solveGeneratedProblem(d1 , d2, B);							//Solve the problem with generate
     else
-        solveProblem(filename, d1, d2, B);							//Else solve with given polynomials
+        solveProblem(filename, d1, d2, B, fromPoints);							//Else solve with given polynomials
 
     return 0;											//End of main
 
@@ -86,16 +98,30 @@ void solveGeneratedProblem(int d1, int d2, int B)						//Generate and Solve
 }
 
 
-void solveProblem(char * filename, int d1, int d2,int B)
+void solveProblem(char * filename, int d1, int d2,int B, bool fromPoints)
 {
     char * polynomial1, * polynomial2;
-    Parser::readInput(filename, polynomial1, polynomial2);					//read d1, d2, p1, p2
-    fprintf(stdout,"Equations \n------- \n%s\n%s\n ", polynomial1, polynomial2);
-    int systemDegree=0;
-    BivariatePolynomial * Bp1 = new BivariatePolynomial(polynomial1, d1);			//initialize Bp1, Bp2
-    BivariatePolynomial * Bp2 = new BivariatePolynomial(polynomial2, d2);
+	BivariatePolynomial * Bp1;
+	BivariatePolynomial * Bp2;
+    if(fromPoints == true)
+    {
+    	MatrixXd pointsMatrix, pointsMatrix2;
+    	Parser::readPoints(pointsMatrix, pointsMatrix2);
+    	Interpolation interpolation(d1, d2, pointsMatrix), interpolation2(d1,d2, pointsMatrix2);
+    	Bp1 = interpolation.find();
+    	Bp2 = interpolation2.find();
+    	exit(0);
+    	//interpolation logic
+    }
+    else
+   {
+    	Parser::readInput(filename, polynomial1, polynomial2);					//read d1, d2, p1, p2
+    	fprintf(stdout,"Equations \n------- \n%s\n%s\n ", polynomial1, polynomial2);
+    	int systemDegree=0;
+    	Bp1 = new BivariatePolynomial(polynomial1, d1);			//initialize Bp1, Bp2
+    	Bp2 = new BivariatePolynomial(polynomial2, d2);
+    }
     SylvesterMatrix * SM = new SylvesterMatrix(Bp1, Bp2);					//construct the sylvester matrix from Bp1 and Bp2
-    int SpDeg = getHiddenMaxDeg(SM, Bp1, Bp2);
     SylvesterPolynomial * SP = new SylvesterPolynomial(SM->getHiddenDeg(), SM->getRowDimension());	//sylvester polynomial of sylvester matrix hidden variable degree
     SP->SMatrixToSPolynomial(SM);								//convert Sylvester Matrix to sylvester polynomial
     MyMatrix * m = new MyMatrix(SM->getRowDimension(), 1);					//random matrix of 1 column (the vector v)
@@ -108,10 +134,47 @@ void solveProblem(char * filename, int d1, int d2,int B)
     //Project 2 code */
     ProblemSolver * PS = new ProblemSolver(SP, B, SP->getDegree());
     PS->Solve();
+    findFullSolutions(Bp1, Bp2, PS);
     backSubstituteSols(Bp1, Bp2, PS);
+
     changeOfVariable(Bp1, Bp2, SM, PS, B);
 //    delete result;
     cleanResources(PS, SM, Bp1, Bp2, SP, m);							//clean resources
+}
+
+void findFullSolutions(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)
+{
+	cout<<"Printing Final Solution"<<endl;
+    int numSols = PS->getNumOfSols();
+    for (int i = 0; i < numSols; ++i) {								//For every solution
+        Solution * sol = PS->getSolution(i);
+        if(sol->getMultiplicity() > 1) {                           //if multiplicity of solution is 1 back substitute the sols and check if they nullify the polynomials
+        	Polynomial * result1 = Bp1->backSubstitute(sol->getY(), PS->getHiddenVar());
+        	Polynomial * result2 = Bp2->backSubstitute(sol->getY(), PS->getHiddenVar());
+        	int numRoots1, numRoots2;
+        	double * roots1 = result1->computeAndGetRoots(numRoots1);
+        	double * roots2 = result2->computeAndGetRoots(numRoots2);
+        	int index = 0;
+        	for(int i = 0; i < numRoots1; i++)
+        	{
+            	for(int j = 0; j < numRoots2; j++)
+            	{
+            		if(abs(roots1[i] - roots2[j]) < ERROR_MARGIN)
+            		{
+            			sol->setX(roots1[i], index);
+            			index++;
+            		}
+            	}
+        	}
+        }
+        sol->PrintSolution();
+    }
+}
+int getMax(int m1, int m2)
+{
+	if(m1>m2)
+		return m1;
+	return m2;
 }
 
 bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)//Compute polynomials for computed solutions

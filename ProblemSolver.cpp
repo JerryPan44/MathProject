@@ -8,6 +8,7 @@ using namespace Eigen;
 
 ProblemSolver::ProblemSolver(SylvesterPolynomial * SP, unsigned int B, unsigned int d):degree(d), mdIsInvertible(true), Solved(false), numOfSolutions(0)
 {														//Find Md type (non-singular,ill-consitioned) and if gen. or std eigenproblem
+    this->hiddenVar = SP->getHiddenVar();
     this->sylvesterPolynomial = SP;
     computeUpperBound(B);											//compute 10^B (Upper Bound)
     initMd(SP->getMd(this->degree), SP->getMatrixDimensions());							//Compute Md
@@ -100,8 +101,12 @@ bool ProblemSolver::solveStandardEigenProblem()				//Solve with the standard eig
     this->Solutions = new Solution*[eivals.rows()];			//commit pointers in number equal to the number of solutions
     this->numOfSolutions = eivals.rows();				//Number of solutions updated to the class
     for (int i = 0; i < eivals.rows(); ++i) {
-        this->Solutions[i] = new Solution(eivecs(eivecs.rows() - 2,i).real()/eivecs(eivecs.rows() - 1,i).real(),
+        if(this->hiddenVar == 'y')
+            this->Solutions[i] = new Solution(eivecs(eivecs.rows() - 2,i).real()/eivecs(eivecs.rows() - 1,i).real(),
                                           eivals(i).real(), multiplicity[i]);	//add solutions
+        else
+            this->Solutions[i] = new Solution(eivals(i).real(),eivecs(eivecs.rows() - 2,i).real()/eivecs(eivecs.rows() - 1,i).real(),
+                                              multiplicity[i]);	//add solutions
         this->Solutions[i]->PrintSolution();					//and print them
     }
     return true;
@@ -170,8 +175,12 @@ bool ProblemSolver::solveGeneralizedEigenProblem()					//Solve with the genralis
     this->Solutions = new Solution * [Eivals.rows()];					//commit pointers in number equal to the number of solutions
     this->numOfSolutions = Eivals.rows();						//Number of solutions updated to the class
     for (int i = 0; i < Eivals.rows(); ++i) {
-        this->Solutions[i] = new Solution(Eivecs(this->degree * dimensionM - 2,i)/Eivecs(degree * dimensionM - 1,i),
+        if(this->hiddenVar == 'y')
+            this->Solutions[i] = new Solution(Eivecs(this->degree * dimensionM - 2,i)/Eivecs(degree * dimensionM - 1,i),
                                           -(Eivals(i, 0)/Eivals(i, 2)), multiplicity[i]);	//add solutions
+        else
+            this->Solutions[i] = new Solution(-(Eivals(i, 0)/Eivals(i, 2)), Eivecs(this->degree * dimensionM - 2,i)/Eivecs(degree * dimensionM - 1,i),
+                                              multiplicity[i]);	//add solutions
         this->Solutions[i]->PrintSolution();							//and print them
     }
     return true;
@@ -372,6 +381,9 @@ bool ProblemSolver::removeSolsWithMultiplicityGeneralized(Eigen::MatrixXd & Eive
 
         if(this->GeneralizedNoSolution(Eivecs, Eivals, j, Multiplicity))							//Eigenvalue produces no solution
         {															//in generalized eigenproblem
+	    for (int i = j; i < Eivals.rows(); ++i) {
+                Multiplicity[i] = Multiplicity[i+1];
+            }
             if( j < numRows )													//
                 Eivals.block(j, 0, numRows - j, Eivals.cols()) = Eivals.block(j + 1, 0, numRows - j, Eivals.cols());		//
             if( j < numCols )													//
