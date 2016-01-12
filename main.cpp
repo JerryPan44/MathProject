@@ -107,10 +107,18 @@ void solveProblem(char * filename, int d1, int d2,int B, bool fromPoints)
     {
     	MatrixXd pointsMatrix, pointsMatrix2;
     	Parser::readPoints(pointsMatrix, pointsMatrix2);
-    	Interpolation interpolation(d1, d2, pointsMatrix), interpolation2(d1,d2, pointsMatrix2);
+    	cout<<"Points 1 :"<<endl;
+    	cout<<pointsMatrix<<endl;
+    	cout<<"Points 2 :"<<endl;
+    	cout<<pointsMatrix2<<endl;
+    	Interpolation interpolation(d1, pointsMatrix), interpolation2(d2 , pointsMatrix2);
     	Bp1 = interpolation.find();
     	Bp2 = interpolation2.find();
-    	exit(0);
+        if(Bp1 == NULL || Bp2 == NULL)
+        {
+            cout<< "Error in interpolation" << endl;
+        	exit(0);
+        }
     	//interpolation logic
     }
     else

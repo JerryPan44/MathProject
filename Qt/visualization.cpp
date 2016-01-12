@@ -24,11 +24,7 @@ Visualization::Visualization(QWidget *parent) :
     this->widgetPoints2->setStatusLabelActive(true);
 
     instance = new QtGnuplotInstance();
-    instance2 = new QtGnuplotInstance();
-    finalInstance = new QtGnuplotInstance();
     instance->setWidget(widgetPoints1);
-    instance2->setWidget(widgetPoints2);
-    finalInstance->setWidget(finalWidget);
     ui->selectFile->setEnabled(false);
     ui->InsertPoints->setEnabled(false);
     ui->solve->setEnabled(false);
@@ -158,7 +154,7 @@ void Visualization::on_solve_clicked()
         arguments << "-points" <<"-d1"<<ui->d1Box->text()<<"-d2"<<ui->d2Box->text()<<"-solve"<<"8";
         QProcess * executable = new QProcess();
         QString points = this->ui->pointsTxt->toPlainText();
-        points.append("\n");
+        points.append("\n-d \n");
         QString points2 = this->ui->points2Txt->toPlainText();
 
         QByteArray toChar = points.toLatin1();
@@ -182,6 +178,7 @@ void Visualization::on_solve_clicked()
 
 void Visualization::on_InsertPoints_clicked()
 {
+    instance->setWidget(widgetPoints1);
     this->widgetPoints1->show();
     widgetPoints1->resize(QSize(800,600));
 
@@ -193,10 +190,11 @@ void Visualization::on_InsertPoints_clicked()
 
 void Visualization::on_InsertPoints2_clicked()
 {
+    instance->setWidget(widgetPoints2);
     this->widgetPoints2->show();
     widgetPoints2->resize(QSize(800,600));
 
-    *instance2 <<\
+    *instance <<\
     "set yrange [-30:30]\nset xrange [-30:30]\nset isosamples 500,500\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nplot 1/0\n";
     ui->solve->setEnabled(true);
 }

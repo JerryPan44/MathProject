@@ -4,7 +4,7 @@
 #include <iostream>
 #include "eigen/Eigen/Dense"
 #include "BivariatePolynomial.h"
-
+#include "inttypes.h"
 using namespace Eigen;
 class Interpolation
 {
@@ -17,11 +17,11 @@ class Interpolation
 	double** P;
 	int rank;
  public:
-	Interpolation(unsigned int, unsigned int,MatrixXd);
+	Interpolation(uint64_t, MatrixXd);
 	void ComputeM();
-	double entry(unsigned int, unsigned int, unsigned int);
+	double entry(uint64_t, uint64_t, uint64_t);
 	int Check_k();
-	double powerOf(double, unsigned int);
+	double powerOf(double, uint64_t);
 	BivariatePolynomial* find();
 };
 

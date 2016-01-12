@@ -24,7 +24,7 @@ void Parser::readPoints(MatrixXd & pointsMatrix, MatrixXd & pointsMatrix2)
 	int num = 0;
 	while(getline(cin, points, delim) != NULL)
 	{
-		if(!strcmp(points.c_str(),"\n"))
+		if(!strcmp(points.c_str(),"-d"))
 				break;
 		points1.push_back(points);
 		if(getline(cin, points, '\n') != NULL)
@@ -39,15 +39,13 @@ void Parser::readPoints(MatrixXd & pointsMatrix, MatrixXd & pointsMatrix2)
 	{
 		pointsMatrix(i, 0) = atof(points1[i].c_str());
 		pointsMatrix(i, 1) = atof(points2[i].c_str());
-		cout << pointsMatrix(i, 0) << pointsMatrix(i, 1) << " " << i << endl;
+//		cout << pointsMatrix(i, 0) << pointsMatrix(i, 1) << " " << i << endl;
 	}
 	points1.clear();
 	points2.clear();
 	num = 0;
 	while(getline(cin, points, delim) != NULL)
 	{
-		if(!strcmp(points.c_str(),"\n"))
-				break;
 		points1.push_back(points);
 		if(getline(cin, points, '\n') != NULL)
 			points2.push_back(points);
@@ -61,7 +59,7 @@ void Parser::readPoints(MatrixXd & pointsMatrix, MatrixXd & pointsMatrix2)
 	{
 		pointsMatrix2(i, 0) = atof(points1[i].c_str());
 		pointsMatrix2(i, 1) = atof(points2[i].c_str());
-		cout << pointsMatrix2(i, 0) << pointsMatrix2(i, 1) << " " << i << endl;
+//		cout << pointsMatrix2(i, 0) << pointsMatrix2(i, 1) << " " << num << " " << i << endl;
 	}
 }
 

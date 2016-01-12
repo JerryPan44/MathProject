@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c
 LDFLAGS= -g3 -I eigen/
-SOURCES=main.cpp Parse.cpp Solution.cpp BivariatePolynomial.cpp SylvesterMatrix.cpp Polynomial.cpp SylvesterPolynomial.cpp Matrix.cpp ProblemSolver.cpp
+SOURCES=main.cpp Parse.cpp Solution.cpp BivariatePolynomial.cpp SylvesterMatrix.cpp Polynomial.cpp SylvesterPolynomial.cpp Matrix.cpp ProblemSolver.cpp Interpolation.cpp
 OBJECTS=$(SOURCES:.h.c=.o)
 EXECUTABLE=exe
 

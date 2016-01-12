@@ -6,7 +6,7 @@
 using namespace std;
 using namespace Eigen;
 
-Interpolation::Interpolation(int a, int b, MatrixXd B):k(a),deg(b),rank(0)
+Interpolation::Interpolation(uint64_t b, MatrixXd B):k(B.rows()),deg(b),rank(0)
 {
 	d=((b+1)*(b+2)/2)-1;
 	MatrixXd A=B;
@@ -20,7 +20,7 @@ Interpolation::Interpolation(int a, int b, MatrixXd B):k(a),deg(b),rank(0)
 }
 
 
-double Interpolation::powerOf(double Num, int power)
+double Interpolation::powerOf(double Num, uint64_t power)
 {	
 	double p=1.0;
 	if(power!=0){
@@ -31,7 +31,7 @@ double Interpolation::powerOf(double Num, int power)
 	return p;	
 }
 
-double Interpolation::entry(int i, int a, int b)
+double Interpolation::entry(uint64_t i, uint64_t a, uint64_t b)
 {	double x,y,m,n;
 	x=A(i,0);
 	y=A(i,1);
@@ -42,10 +42,10 @@ double Interpolation::entry(int i, int a, int b)
 	return m;
 }
 
-void Interpolation::computeM()
+void Interpolation::ComputeM()
 {
 	this->M = MatrixXd(this->k, this-> k+1);
-	int i,j,a,b,sum;
+	int i,j,a,b,sum,y;
 	i=0;
 	while(i<k){
 		y=0;
@@ -69,21 +69,17 @@ void Interpolation::computeM()
 
 
 int Interpolation::Check_k()
-{	ofstream myfile;
-	myfile.open ("Interpolation.txt");
+{
 	if(k==d){
 		//cout<<"The system of equations is well-constrained."<<endl;
-		myfile.close();
 		return 1;
 	}
 	else if(k>d){
-		myfile<<"Overconstrained system, usually no solution."<<endl;
-		myfile.close();		
+		cout<<"Overconstrained system, usually no solution."<<endl;
 		return 0;
 	}
 	else{
-		myfile<<"Underdefined, usually infinite number of solutions."<<endl;
-		myfile.close();
+		cout<<"Underdefined, usually infinite number of solutions."<<endl;
 		return 0;
 	}
 }
@@ -91,14 +87,14 @@ int Interpolation::Check_k()
 
 BivariatePolynomial* Interpolation::find()
 {
+	ofstream myfile;
+	myfile.open ("InterpolationEquations.txt",std::ofstream::trunc);
 	if(this->Check_k()!=0){
 		BivariatePolynomial* Bp;
-		this->computeM();
-		ofstream myfile;
-		myfile.open ("Interpolation.txt");
-		myfile<<"The system of equations is well-constrained."<<endl;
+		this->ComputeM();
 		FullPivLU<MatrixXd> lu_decomp(M);
 		rank=lu_decomp.rank();
+		cout<<"The system of equations is well-constrained."<<endl;
 		//cout << "The rank of M is " << rank << endl;
 		if(rank==k){
 			MatrixXd ker = A.fullPivLu().kernel();
@@ -106,7 +102,7 @@ BivariatePolynomial* Interpolation::find()
 			ker=ker/t;
 			//cout << "The kernel of M is "<< endl << ker << endl;
 			int count=0;
-			P(0,0)=ker(0);
+			this->P[0][0] = ker(0);
 			int a,b,sum=0;
 			a=sum;
 			while(count!=k+1){
@@ -131,19 +127,18 @@ BivariatePolynomial* Interpolation::find()
 			}
 			else a--;
 		}
-		i++;
 		myfile<<endl;
 		//cout<<P<<endl;
 		myfile.close();
 		Bp = new BivariatePolynomial(deg,P);
 		}
 		else {
-			myfile<<"The problem is infeasible or the solution is numerically unstable."<<endl;
+			cout<<"The system is infeasible or the solution is numerically unstable."<<endl;
 			return NULL;
 		}
 		return Bp;
 	}
-	myfile<<"K is not proper"<<endl;
+//	cout<<"K is not proper"<<endl;
 	return NULL;
 
 }
