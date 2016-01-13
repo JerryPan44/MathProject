@@ -15,7 +15,7 @@ Visualization::Visualization(QWidget *parent) :
     ui->setupUi(this);
     finalWidget = new QtGnuplotWidget();
 
-    this->widgetPoints1 = new QtGnuplotWidget();
+    this->widgetPoints1 = new QtGnuplotWidget();        //different widgets because different output
     this->widgetPoints1->installEventFilter(this);
     this->widgetPoints1->setStatusLabelActive(true);
 
@@ -56,13 +56,13 @@ bool Visualization::eventFilter(QObject *obj, QEvent *event)
         if (obj == this->widgetPoints1) {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
             if (mouseEvent->button() == Qt::LeftButton) {
-                ui->pointsTxt->append(this->widgetPoints1->getStatusLabel()->text());
+                ui->pointsTxt->append(this->widgetPoints1->getStatusLabel()->text().replace(QRegExp("(, |,  )"), " ").replace(QRegExp("\n "), "\n").replace(0, 1, ""));
             }
         }
         if (obj == this->widgetPoints2) {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
             if (mouseEvent->button() == Qt::LeftButton) {
-                ui->points2Txt->append(this->widgetPoints2->getStatusLabel()->text());
+                ui->points2Txt->append(this->widgetPoints2->getStatusLabel()->text().replace(QRegExp("(, |,  )"), " ").replace(QRegExp("\n "), "\n").replace(0, 1, ""));
             }
         }
     }
@@ -71,20 +71,7 @@ bool Visualization::eventFilter(QObject *obj, QEvent *event)
 
 
 
-void Visualization::on_pushButton_clicked()
-{
-    finalWidget->show();
-    finalWidget->resize(QSize(800,600));
-    QStringList functions = this->ui->equationsTxt->toPlainText().split("\n");
-    QString f1 = functions.at(0);
-    f1 = f1.replace(QString("^"),QString("**"));
-    QString f2 = functions.at(1);
-    f2 = f2.replace(QString("^"),QString("**"));
-    *finalInstance <<\
-    "set yrange [-1.5:1.5]\nset xrange [-1.5:1.5]\nset isosamples 500,500\nf(x,y)="+f1+
-                 "\nf2(x,y)= "+f2+"\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nsplot f(x,y), f2(x,y)\n";
-    //*instance << "set tics scale 0.75\nset xtics 1\nset ytics 1\nset yrange [-10:10]\nset xlabel 'x'\nset ylabel 'y'\nset zeroaxis\nplot \"<echo '1 2'\" notitle\n";
-}
+
 
 
 void Visualization::on_readFromFile_clicked()
@@ -126,7 +113,7 @@ void Visualization::on_solve_clicked()
     {
         QString program = "../exe";
         QStringList arguments;
-        arguments << "-read" <<"-d1"<<"2"<<"-d2"<<"3"<<"-solve"<<"8";
+        arguments << "-read" <<"-d1"<<"3"<<"-d2"<<"3"<<"-solve"<<"8";
         QProcess * executable = new QProcess();
         QString myQString = this->ui->equationsTxt->toPlainText();
         executable->start(program, arguments);
@@ -134,10 +121,12 @@ void Visualization::on_solve_clicked()
         const char *str = toChar.data();
         int size = toChar.length();
         executable->write(str, size);
+        executable->closeWriteChannel();
         if(!executable->waitForFinished()) // beware the timeout default parameter
             qDebug() << "executing program failed with exit code" << executable->exitCode();
         else
             ui->outputTxt->setText(QString(executable->readAllStandardOutput()));
+        executable->close();
     }
     if(ui->fromPoints->isChecked())
     {
@@ -155,24 +144,106 @@ void Visualization::on_solve_clicked()
         QProcess * executable = new QProcess();
         QString points = this->ui->pointsTxt->toPlainText();
         points.append("\n-d \n");
-        QString points2 = this->ui->points2Txt->toPlainText();
-
+        points.append(this->ui->points2Txt->toPlainText());
+        points.append("\n");
         QByteArray toChar = points.toLatin1();
         const char *str = toChar.data();
         int size = toChar.length();
 
-        QByteArray toChar2 = points2.toLatin1();
-        const char *str2 = toChar2.data();
-        int size2 = toChar2.length();
+//        QByteArray toChar2 = points2.toLatin1();
+//        const char *str2 = toChar2.data();
+//        int size2 = toChar2.length();
 
         executable->start(program, arguments);
-        executable->write(str, size);
-        executable->write(str2, size2);
 
+        executable->waitForStarted();
+
+        if(executable->write(str, size) < size)
+        {
+            QMessageBox::critical(this, tr("Error"), tr("error in writing to process " + executable->readAllStandardOutput()));
+            executable->terminate();
+            return;
+        }
+        executable->closeWriteChannel();
         if(!executable->waitForFinished()) // beware the timeout default parameter
-            qDebug() << "executing program failed with exit code" << executable->exitCode();
+        {
+            QMessageBox::critical(this, tr("Error"), tr("executing program failed with exit code" + executable->exitCode() + executable->readAllStandardOutput()));
+            return;
+        }
         else
+        {
             ui->outputTxt->setText(QString(executable->readAllStandardOutput()));
+            executable->close();
+            QFile file("InterpolationEquations.txt");
+            if (!file.open(QIODevice::ReadOnly)) {
+                QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+                return;
+            }
+            QTextStream in(&file);
+            QString str = in.readAll();
+            if(str == "")
+            {
+                QMessageBox::critical(this, tr("Error"), tr("Interpolation did not find the equations"));
+                return;
+            }
+            ui->equationsTxt->setText(str);
+        }
+    }
+    instance->setWidget(finalWidget);
+    finalWidget->show();
+    finalWidget->resize(QSize(800,600));
+    QStringList functions = this->ui->equationsTxt->toPlainText().split("\n");
+    QString f1 = functions.at(0);
+    f1 = f1.replace(QString("^"),QString("**"));
+    QString f2 = functions.at(1);
+    f2 = f2.replace(QString("^"),QString("**"));
+
+    QFile file("solutions.txt");
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+        return;
+    }
+
+    QTextStream in(&file);
+    QString str = in.readAll();
+    if(str == "")
+    {
+        QMessageBox::critical(this, tr("Error"), tr("The system has no solution"));
+        return;
+    }
+
+    QStringList solutions = str.split("\n");
+    double xMin, xMax, yMin, yMax;
+    findMinAndMaxXandY(solutions, xMin, xMax, yMin, yMax);
+    *instance <<\
+    "set yrange ["+QString::number(yMin)+":"+QString::number(yMax)+"]\nset xrange["+QString::number(xMin)+":"+QString::number(xMax)+"]\nset isosamples 500,500\nf(x,y)="+f1+
+                 "\nf2(x,y)= "+f2+"\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nsplot f(x,y), f2(x,y)\n";
+}
+
+void Visualization::findMinAndMaxXandY(QStringList & solutions,
+                        double & xMin, double & xMax,
+                        double & yMin, double & yMax)
+{
+    xMin = solutions.at(0).split(" ").at(0).toDouble();
+    xMax = xMin;
+    yMin = solutions.at(0).split(" ").at(1).toDouble();
+    yMax = yMin;
+    double xCurr, yCurr;
+    for(int i = 1; i < solutions.length() - 1 ; i++)        //length - 1 because last one doesnt count
+    {
+        xCurr = solutions.at(i).split(" ").at(0).toDouble();
+        yCurr = solutions.at(i).split(" ").at(1).toDouble();
+
+        if(xCurr > xMax)
+            xMax = xCurr;
+        if(xCurr < xMin)
+            xMin = xCurr;
+
+        if(yCurr < yMin)
+            yMin = yCurr;
+        if(yCurr > yMax)
+            yMax = yCurr;
+
     }
 }
 
@@ -181,7 +252,7 @@ void Visualization::on_InsertPoints_clicked()
     instance->setWidget(widgetPoints1);
     this->widgetPoints1->show();
     widgetPoints1->resize(QSize(800,600));
-
+    ui->pointsTxt->setText("");
     *instance <<\
     "set yrange [-30:30]\nset xrange [-30:30]\nset isosamples 500,500\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nplot 1/0\n";
     ui->solve->setEnabled(true);
@@ -193,7 +264,7 @@ void Visualization::on_InsertPoints2_clicked()
     instance->setWidget(widgetPoints2);
     this->widgetPoints2->show();
     widgetPoints2->resize(QSize(800,600));
-
+    ui->points2Txt->setText("");
     *instance <<\
     "set yrange [-30:30]\nset xrange [-30:30]\nset isosamples 500,500\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nplot 1/0\n";
     ui->solve->setEnabled(true);

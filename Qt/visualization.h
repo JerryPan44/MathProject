@@ -24,6 +24,9 @@ private:
     QtGnuplotInstance *instance;
     QtGnuplotInstance *instance2;
     QtGnuplotInstance *finalInstance;
+    void findMinAndMaxXandY(QStringList & solutions,
+                            double & xMin, double & xMax,
+                            double & yMin, double & yMax);
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
@@ -33,7 +36,6 @@ private slots:
 
     void on_actionOpen_triggered();
 
-    void on_pushButton_clicked();
     void on_readFromFile_clicked();
 
     void on_selectFile_clicked();
@@ -43,8 +45,6 @@ private slots:
     void on_solve_clicked();
 
     void on_InsertPoints_clicked();
-
-    void on_insertPoints2_clicked();
 
     void on_InsertPoints2_clicked();
 

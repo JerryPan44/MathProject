@@ -1,5 +1,8 @@
 #ifndef _SOLUTION_
 #define _SOLUTION_
+
+#include <fstream>
+#include <iostream>
 #include <assert.h>
 class Solution
 {
@@ -35,6 +38,8 @@ public:
         return this->multiplicity;
     }
     void PrintSolution();
+    void PrintSolution(std::ofstream &);
+
 };
 
 #endif

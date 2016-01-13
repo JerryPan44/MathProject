@@ -6,10 +6,14 @@
 using namespace std;
 using namespace Eigen;
 
+
+Interpolation::~Interpolation()
+{
+}
 Interpolation::Interpolation(uint64_t b, MatrixXd B):k(B.rows()),deg(b),rank(0)
 {
 	d=((b+1)*(b+2)/2)-1;
-	MatrixXd A=B;
+	A=B;
 	this->P = new double*[d+1];
 	for (int i = 0; i < d+1; ++i) {
 		this->P[i] = new double[d+1];
@@ -44,7 +48,7 @@ double Interpolation::entry(uint64_t i, uint64_t a, uint64_t b)
 
 void Interpolation::ComputeM()
 {
-	this->M = MatrixXd(this->k, this-> k+1);
+	this->M = MatrixXd(k,k+1);
 	int i,j,a,b,sum,y;
 	i=0;
 	while(i<k){
@@ -54,7 +58,6 @@ void Interpolation::ComputeM()
 		while(y!=k+1){
 			b=sum-a;
 			M(i,y)=this->entry(i,a,b);
-			//cout<<M(i,y)<<endl;
 			y++;
 			if(b==sum){
 				sum++;
@@ -64,7 +67,6 @@ void Interpolation::ComputeM()
 		}
 		i++;
 	}
-	//cout << "Here is the matrix M:\n" << A << endl;
 }
 
 
@@ -85,10 +87,8 @@ int Interpolation::Check_k()
 }
 
 
-BivariatePolynomial* Interpolation::find()
+BivariatePolynomial* Interpolation::find(ofstream & equationsTxt)
 {
-	ofstream myfile;
-	myfile.open ("InterpolationEquations.txt",std::ofstream::trunc);
 	if(this->Check_k()!=0){
 		BivariatePolynomial* Bp;
 		this->ComputeM();
@@ -97,7 +97,7 @@ BivariatePolynomial* Interpolation::find()
 		cout<<"The system of equations is well-constrained."<<endl;
 		//cout << "The rank of M is " << rank << endl;
 		if(rank==k){
-			MatrixXd ker = A.fullPivLu().kernel();
+			MatrixXd ker = M.fullPivLu().kernel();
 			double t=ker(k);
 			ker=ker/t;
 			//cout << "The kernel of M is "<< endl << ker << endl;
@@ -110,15 +110,15 @@ BivariatePolynomial* Interpolation::find()
 				t=ker(count);
 				this->P[a][b]=t;
 				if(t>0.0 && count>0){
-					myfile<<" +";
+					equationsTxt<<"+";
 				}
-				if(count>0) myfile<<" ";
+				if(count>0) equationsTxt<<"";
 				if(t!=0.0){
-				myfile<<t;
-				if(a==1) myfile<<"x";
-				if(b==1) myfile<<"y";
-				if(a>1) myfile<<"x^"<<a;
-				if(b>1) myfile<<"y^"<<b;
+					equationsTxt<<t;
+				if(a==1) equationsTxt<<"*x";
+				if(b==1) equationsTxt<<"*y";
+				if(a>1) equationsTxt<<"*x^"<<a;
+				if(b>1) equationsTxt<<"*y^"<<b;
 			}
 			count++;
 			if(b==sum){
@@ -127,10 +127,9 @@ BivariatePolynomial* Interpolation::find()
 			}
 			else a--;
 		}
-		myfile<<endl;
+			equationsTxt<<endl;
 		//cout<<P<<endl;
-		myfile.close();
-		Bp = new BivariatePolynomial(deg,P);
+			Bp = new BivariatePolynomial(deg,P);
 		}
 		else {
 			cout<<"The system is infeasible or the solution is numerically unstable."<<endl;

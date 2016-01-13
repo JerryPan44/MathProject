@@ -16,3 +16,21 @@ void Solution::PrintSolution()							//Print y, x, multiplicity
     else
         cout<<" x = "<<x[0]<<endl;
 }
+
+void Solution::PrintSolution(ofstream & file)							//Print y, x, multiplicity
+{
+    if(this->multiplicity > 1)
+    {
+        for(int i = 0 ; i < this->lastSet + 1; i++)
+        {
+            file << this->y << " ";
+            file << this->x[i] << endl;
+        }
+    }
+    else
+    {
+        file << this->y << " ";
+        file << this->x[0] << endl;
+    }
+
+}

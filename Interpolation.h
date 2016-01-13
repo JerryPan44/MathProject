@@ -2,6 +2,7 @@
 #define _INTERPOLATION_
 
 #include <iostream>
+#include <fstream>
 #include "eigen/Eigen/Dense"
 #include "BivariatePolynomial.h"
 #include "inttypes.h"
@@ -18,11 +19,12 @@ class Interpolation
 	int rank;
  public:
 	Interpolation(uint64_t, MatrixXd);
+	~Interpolation();
 	void ComputeM();
 	double entry(uint64_t, uint64_t, uint64_t);
 	int Check_k();
 	double powerOf(double, uint64_t);
-	BivariatePolynomial* find();
+	BivariatePolynomial * find(std::ofstream &);
 };
 
 #endif
