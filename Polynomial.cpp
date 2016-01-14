@@ -6,7 +6,7 @@
 #include "eigen/Eigen/Core"
 #include "eigen/Eigen/SVD"
 #include "eigen/Eigen/Eigenvalues"
-#define ERROR_MARGIN 0.00001
+#include "ErrorMargin.h"
 using namespace std;
 using namespace Eigen;
 

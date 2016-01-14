@@ -125,7 +125,7 @@ void Visualization::on_solve_clicked()
         if(!executable->waitForFinished()) // beware the timeout default parameter
             qDebug() << "executing program failed with exit code" << executable->exitCode();
         else
-            ui->outputTxt->setText(QString(executable->readAllStandardOutput()));
+            ui->outputTxt->setText(QString(executable->readAllStandardOutput()) + QString(executable->readAllStandardError()));
         executable->close();
     }
     if(ui->fromPoints->isChecked())
@@ -189,15 +189,6 @@ void Visualization::on_solve_clicked()
             ui->equationsTxt->setText(str);
         }
     }
-    instance->setWidget(finalWidget);
-    finalWidget->show();
-    finalWidget->resize(QSize(800,600));
-    QStringList functions = this->ui->equationsTxt->toPlainText().split("\n");
-    QString f1 = functions.at(0);
-    f1 = f1.replace(QString("^"),QString("**"));
-    QString f2 = functions.at(1);
-    f2 = f2.replace(QString("^"),QString("**"));
-
     QFile file("solutions.txt");
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
@@ -211,7 +202,14 @@ void Visualization::on_solve_clicked()
         QMessageBox::critical(this, tr("Error"), tr("The system has no solution"));
         return;
     }
-
+    instance->setWidget(finalWidget);
+    finalWidget->show();
+    finalWidget->resize(QSize(800,600));
+    QStringList functions = this->ui->equationsTxt->toPlainText().split("\n");
+    QString f1 = functions.at(0);
+    f1 = f1.replace(QString("^"),QString("**"));
+    QString f2 = functions.at(1);
+    f2 = f2.replace(QString("^"),QString("**"));
     QStringList solutions = str.split("\n");
     double xMin, xMax, yMin, yMax;
     findMinAndMaxXandY(solutions, xMin, xMax, yMin, yMax);

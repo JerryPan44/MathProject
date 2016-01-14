@@ -14,9 +14,9 @@
 #include "ProblemSolver.h"
 #include "ChangeOfVariableCoefficients.h"
 #include "Interpolation.h"
+#include "ErrorMargin.h"
 #include <fstream>
 #include <cmath>
-#define ERROR_MARGIN 0.00001
 using namespace std;
 using namespace Eigen;
 unsigned int getHiddenMaxDeg(SylvesterMatrix * SM, BivariatePolynomial * Bp1, BivariatePolynomial * Bp2);
@@ -25,7 +25,8 @@ void cleanResources(ProblemSolver * PS, SylvesterMatrix * , BivariatePolynomial 
 void solveProblem(char * filename, int d1, int d2,int B, bool fromPoints);
 void solveGeneratedProblem(int d1, int d2, int B);
 void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2,SylvesterMatrix * SM, ProblemSolver * PS, int B);
-bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS);
+bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS, ofstream &);
+bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS, ProblemSolver * PSNew);
 
 int main (int argc, char *argv[])
 {
@@ -92,7 +93,7 @@ void solveGeneratedProblem(int d1, int d2, int B)						//Generate and Solve
     MyMatrix * m = new MyMatrix(SM->getRowDimension(), 1);      				//generate random matrix of 1 column (vector v)
     ProblemSolver * PS = new ProblemSolver(SP, B, SP->getDegree());				//create a problem solver class
     PS->Solve();										//solve
-    backSubstituteSols(Bp1, Bp2, PS);								//replace sols and check if they are indeed sols
+//    backSubstituteSols(Bp1, Bp2, PS);								//replace sols and check if they are indeed sols
     SM->changeOfVariable();									//change of variable logic
     changeOfVariable(Bp1, Bp2, SM, PS, B);
     cleanResources(PS, SM, Bp1, Bp2, SP, m);        						//clean resources
@@ -146,8 +147,6 @@ void solveProblem(char * filename, int d1, int d2,int B, bool fromPoints)
     ProblemSolver * PS = new ProblemSolver(SP, B, SP->getDegree());
     PS->Solve();
     findFullSolutions(Bp1, Bp2, PS);
-    backSubstituteSols(Bp1, Bp2, PS);
-
     changeOfVariable(Bp1, Bp2, SM, PS, B);
 //    delete result;
     cleanResources(PS, SM, Bp1, Bp2, SP, m);							//clean resources
@@ -155,9 +154,6 @@ void solveProblem(char * filename, int d1, int d2,int B, bool fromPoints)
 
 void findFullSolutions(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)
 {
-	cout<<"Printing Final Solution"<<endl;
-    ofstream solutionsTxt;
-    solutionsTxt.open("solutions.txt");
     int numSols = PS->getNumOfSols();
     for (int i = 0; i < numSols; ++i) {								//For every solution
         Solution * sol = PS->getSolution(i);
@@ -181,7 +177,6 @@ void findFullSolutions(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pro
         	}
         }
         sol->PrintSolution();
-        sol->PrintSolution(solutionsTxt);
     }
 }
 
@@ -193,21 +188,106 @@ int getMax(int m1, int m2)
 	return m2;
 }
 
-bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS)//Compute polynomials for computed solutions
+bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS, ofstream & solutionsTxt)//Compute polynomials for computed solutions
 {
     int numSols = PS->getNumOfSols();
+    cout<<"Regular Roots"<<endl;
+    cout<<"--------------"<<endl;
     for (int i = 0; i < numSols; ++i) {								//For every solution
         Solution * sol = PS->getSolution(i);
         if(sol->getMultiplicity() == 1) {                           //if multiplicity of solution is 1 back substitute the sols and check if they nullify the polynomials
             double res1 = Bp1->backSubstitute(sol->getX(), sol->getY());			//Compute the value of the polynomial Bp1
             double res2 = Bp2->backSubstitute(sol->getX(), sol->getY());			//Compute the value of the polynomial Bp2
-            if(abs(res1) < 0.000001 && abs(res2) < 0.000001)					//Are the values over 10^-6
+            if(abs(res1) < ERROR_MARGIN && abs(res2) < ERROR_MARGIN)					//Are the values over 10^-6
+            {
+                solutionsTxt << sol->getY() << " " << sol->getX() << endl;
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
+            }
             else
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED : "<<res1<<" , "<<res2<<endl;
         }
+        else
+            if(sol->getMultiplicity() > 1)
+            {
+                for (int j = 0; j < sol->getLastSet() + 1; ++j) {
+                    double res1 = Bp1->backSubstitute(sol->getXat(j), sol->getY());			//Compute the value of the polynomial Bp1
+                    double res2 = Bp2->backSubstitute(sol->getXat(j), sol->getY());			//Compute the value of the polynomial Bp2
+                    if(abs(res1) < ERROR_MARGIN && abs(res2) < ERROR_MARGIN)					//Are the values over 10^-6
+                    {
+                        solutionsTxt << sol->getY() << " " << sol->getXat(j) << endl;
+                        cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getXat(j)<<" ACCEPTED"<<endl;
+                    }
+                    else
+                        cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getXat(j)<<" REJECTED : "<<res1<<" , "<<res2<<endl;
+                }
+            }
     }
 }
+
+bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, ProblemSolver * PS, ProblemSolver * PSNew)//Compute polynomials for computed solutions
+{
+    ofstream solutionsTxt;
+    solutionsTxt.open("solutions.txt");
+    int numSols = PSNew->getNumOfSols();
+    int oldNumSols = PS->getNumOfSols();
+    backSubstituteSols(Bp1, Bp2, PS, solutionsTxt);
+    cout<<endl<<"Roots with change of variable"<<endl;
+    cout<<"--------------"<<endl;
+    for (int i = 0; i < numSols; ++i) {								//For every solution
+        Solution * sol = PSNew->getSolution(i);
+        if(sol->getMultiplicity() == 1) {                           //if multiplicity of solution is 1 back substitute the sols and check if they nullify the polynomials
+            double res1 = Bp1->backSubstitute(sol->getX(), sol->getY());			//Compute the value of the polynomial Bp1
+            double res2 = Bp2->backSubstitute(sol->getX(), sol->getY());			//Compute the value of the polynomial Bp2
+            if(abs(res1) < ERROR_MARGIN && abs(res2) < ERROR_MARGIN)					//Are the values over 10^-6
+            {
+                bool flag = false;
+                for (int j = 0; j < oldNumSols; ++j){
+                    Solution * oldSol = PS->getSolution(j);
+                    if(oldSol->compareSolutions(sol->getX(), sol->getY()))
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag)
+                {
+                    solutionsTxt << sol->getY() << " " << sol->getX() << endl;
+                }
+                cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
+            }
+            else
+                cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" REJECTED : "<<res1<<" , "<<res2<<endl;
+        }
+        else
+            if(sol->getMultiplicity() > 1)
+            {
+                for (int j = 0; j < sol->getLastSet() + 1; ++j) {
+                    double res1 = Bp1->backSubstitute(sol->getXat(j), sol->getY());			//Compute the value of the polynomial Bp1
+                    double res2 = Bp2->backSubstitute(sol->getXat(j), sol->getY());			//Compute the value of the polynomial Bp2
+                    if(abs(res1) < ERROR_MARGIN && abs(res2) < ERROR_MARGIN)					//Are the values over 10^-6
+                    {
+                        bool flag = false;
+                        for (int i = 0; i < oldNumSols; ++i){
+                            Solution * oldSol = PS->getSolution(i);
+                            if(oldSol->compareSolutions(sol->getXat(j), sol->getY()))
+                            {
+                                solutionsTxt << sol->getY() << " " << sol->getXat(j) << endl;
+                            }
+                        }
+                        if(!flag)
+                        {
+                            solutionsTxt << sol->getY() << " " << sol->getX() << endl;
+                        }
+                        cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getXat(j)<<" ACCEPTED"<<endl;
+                    }
+                    else
+                        cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getXat(j)<<" REJECTED : "<<res1<<" , "<<res2<<endl;
+                }
+            }
+    }
+    solutionsTxt.close();
+}
+
 void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, SylvesterMatrix * SM, ProblemSolver * PS, int B)
 {												//Change of variable as asked in 4)
     SylvesterPolynomial * SP;
@@ -227,7 +307,7 @@ void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Sylv
             PSNew->Solve();									//Solve the new eigenproblem
             ChangeOfVariableCoefficients * coefs = SmTemp->getCoefs();
             PSNew->substituteChangeOfVariable(coefs);						//compute new y
-            backSubstituteSols(Bp1, Bp2, PSNew);						//Compute polynomials for computed solutions
+            backSubstituteSols(Bp1, Bp2, PS, PSNew);						//Compute polynomials for computed solutions
             delete PSNew;
             delete SP;
             return;
@@ -235,6 +315,10 @@ void changeOfVariable(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Sylv
         delete PSNew;
         delete SP;
     }
+    ofstream solutionsTxt;
+    solutionsTxt.open("solutions.txt");
+    backSubstituteSols(Bp1, Bp2, PS, solutionsTxt);
+    solutionsTxt.close();
 }
 void cleanResources(ProblemSolver * PS, SylvesterMatrix * SM, BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, SylvesterPolynomial * SP, MyMatrix * m)
 {												//Delete created resources

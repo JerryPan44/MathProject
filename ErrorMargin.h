@@ -1,0 +1,4 @@
+#ifndef _HEADER_ERROR_MARGIN_
+#define _HEADER_ERROR_MARGIN_
+#define ERROR_MARGIN 0.00001
+#endif

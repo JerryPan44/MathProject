@@ -1,8 +1,8 @@
 #include "ProblemSolver.h"
 #include <lapacke.h>
 #include <cmath>
+#include "ErrorMargin.h"
 #define NUM_OF_TRIES 3
-#define ERROR_MARGIN 0.00001
 using namespace std;
 using namespace Eigen;
 
@@ -96,8 +96,6 @@ bool ProblemSolver::solveStandardEigenProblem()				//Solve with the standard eig
         multiplicity[j] = 1;						//For every returned eigenvalue its multiplicity becomes 1
     }
     removeSolsWithMultiplicityStandard(eivecs, eivals, multiplicity);	//Remove solutions with multiplicity >1
-    cout<<"Roots"<<endl;
-    cout<<"----------"<<endl;
     this->Solutions = new Solution*[eivals.rows()];			//commit pointers in number equal to the number of solutions
     this->numOfSolutions = eivals.rows();				//Number of solutions updated to the class
     for (int i = 0; i < eivals.rows(); ++i) {
@@ -107,7 +105,6 @@ bool ProblemSolver::solveStandardEigenProblem()				//Solve with the standard eig
         else
             this->Solutions[i] = new Solution(eivals(i).real(),eivecs(eivecs.rows() - 2,i).real()/eivecs(eivecs.rows() - 1,i).real(),
                                               multiplicity[i]);	//add solutions
-        this->Solutions[i]->PrintSolution();					//and print them
     }
     return true;
 }
@@ -170,8 +167,6 @@ bool ProblemSolver::solveGeneralizedEigenProblem()					//Solve with the genralis
         multiplicity[j] = 1;								//For every returned eigenvalue its multiplicity becomes 1
     }
     removeSolsWithMultiplicityGeneralized(Eivecs, Eivals, multiplicity);		//Remove solutions with multiplicity >1
-    cout<<"Roots"<<endl;
-    cout<<"--------"<<endl;
     this->Solutions = new Solution * [Eivals.rows()];					//commit pointers in number equal to the number of solutions
     this->numOfSolutions = Eivals.rows();						//Number of solutions updated to the class
     for (int i = 0; i < Eivals.rows(); ++i) {
@@ -181,7 +176,6 @@ bool ProblemSolver::solveGeneralizedEigenProblem()					//Solve with the genralis
         else
             this->Solutions[i] = new Solution(-(Eivals(i, 0)/Eivals(i, 2)), Eivecs(this->degree * dimensionM - 2,i)/Eivecs(degree * dimensionM - 1,i),
                                               multiplicity[i]);	//add solutions
-        this->Solutions[i]->PrintSolution();							//and print them
     }
     return true;
 }
@@ -410,6 +404,5 @@ bool ProblemSolver::substituteChangeOfVariable(ChangeOfVariableCoefficients * co
         y = (coefs->t1 * y + coefs->t2) / (coefs->t3 * y + coefs->t4);
         delete this->Solutions[j];
         this->Solutions[j] = new Solution(x, y, mul);							//add x,y',multiplicity
-        this->Solutions[j]->PrintSolution();								//print solution
     }
 }

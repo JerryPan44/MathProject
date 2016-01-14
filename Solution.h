@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <assert.h>
+
 class Solution
 {
     double y;
@@ -18,6 +19,7 @@ public:
     	x[0] = X;
     	lastSet = -1;
     }
+
     void setX(double  Xs, int index)
     {
     	assert(index < multiplicity);
@@ -33,12 +35,24 @@ public:
     {
         return x[0];
     }
+    double getXat(int i)
+    {
+        assert(i < (this->lastSet + 1));
+        return x[i];
+    }
+
     int getMultiplicity()
     {
         return this->multiplicity;
     }
+    int getLastSet()
+    {
+        return this->lastSet;
+    }
     void PrintSolution();
     void PrintSolution(std::ofstream &);
+
+    bool compareSolutions(double, double);
 
 };
 
