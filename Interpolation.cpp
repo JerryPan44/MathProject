@@ -115,10 +115,10 @@ BivariatePolynomial* Interpolation::find(ofstream & equationsTxt)
 				if(count>0) equationsTxt<<"";
 				if(t!=0.0){
 					equationsTxt<<t;
-				if(a==1) equationsTxt<<"*x";
-				if(b==1) equationsTxt<<"*y";
-				if(a>1) equationsTxt<<"*x^"<<a;
-				if(b>1) equationsTxt<<"*y^"<<b;
+				if(a==1) equationsTxt<<"*y";
+				if(b==1) equationsTxt<<"*x";
+				if(a>1) equationsTxt<<"*y^"<<a;
+				if(b>1) equationsTxt<<"*x^"<<b;
 			}
 			count++;
 			if(b==sum){

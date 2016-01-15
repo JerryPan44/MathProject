@@ -199,7 +199,7 @@ void Visualization::on_solve_clicked()
     QString str = in.readAll();
     if(str == "")
     {
-        QMessageBox::critical(this, tr("Error"), tr("The system has no solution"));
+        QMessageBox::critical(this, tr("Error"), tr("The system has no solution or the solutions have been rejected (they are not accurate enough) see the output"));
         return;
     }
     instance->setWidget(finalWidget);
@@ -213,9 +213,24 @@ void Visualization::on_solve_clicked()
     QStringList solutions = str.split("\n");
     double xMin, xMax, yMin, yMax;
     findMinAndMaxXandY(solutions, xMin, xMax, yMin, yMax);
+    //*instance <<\
+      //           "set border linewidth 1.5\nset style line 2 lc rgb \'#dd181f\' lt 1 lw 2 pt 7\n";
+    //*instance << "set tics scale 0.75\nset xtics 1\nset ytics 1\nset yrange [-10:10]\nset xlabel 'x'\nset ylabel 'y'\nset zeroaxis\nplot \"<echo '1 2'\" notitle\n";
     *instance <<\
     "set yrange ["+QString::number(yMin)+":"+QString::number(yMax)+"]\nset xrange["+QString::number(xMin)+":"+QString::number(xMax)+"]\nset isosamples 500,500\nf(x,y)="+f1+
-                 "\nf2(x,y)= "+f2+"\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nsplot f(x,y), f2(x,y)\n";
+                 "\nf2(x,y)= "+f2+"\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nset table \'functions.dat\'\nsplot f(x,y),f2(x,y)\nunset table\nset zeroaxis\nplot \'functions.dat\' with lines, \'solutions.txt\' with points pt 7\n";
+}
+
+QString Visualization::plotSolutions(QStringList & solutions)
+{
+    QString plottedSolutions = "plot";
+    for(int i = 0; i < solutions.length() ; i++)
+    {
+        plottedSolutions.append(solutions.at(0) + "\n");
+    }
+    plottedSolutions.append("using 1:2 pt 7 ps 10");
+    plottedSolutions.append("\n");
+    return plottedSolutions;
 }
 
 void Visualization::findMinAndMaxXandY(QStringList & solutions,
@@ -243,6 +258,10 @@ void Visualization::findMinAndMaxXandY(QStringList & solutions,
             yMax = yCurr;
 
     }
+    yMin-=5;
+    yMax+=5;
+    xMin-=5;
+    xMax+=5;
 }
 
 void Visualization::on_InsertPoints_clicked()
@@ -252,7 +271,7 @@ void Visualization::on_InsertPoints_clicked()
     widgetPoints1->resize(QSize(800,600));
     ui->pointsTxt->setText("");
     *instance <<\
-    "set yrange [-30:30]\nset xrange [-30:30]\nset isosamples 500,500\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nplot 1/0\n";
+    "set yrange [-30:30]\nset xrange [-30:30]\nset xlabel 'x'\nset ylabel 'y'\nset isosamples 500,500\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nplot 1/0\n";
     ui->solve->setEnabled(true);
 }
 
@@ -264,6 +283,6 @@ void Visualization::on_InsertPoints2_clicked()
     widgetPoints2->resize(QSize(800,600));
     ui->points2Txt->setText("");
     *instance <<\
-    "set yrange [-30:30]\nset xrange [-30:30]\nset isosamples 500,500\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nplot 1/0\n";
+    "set yrange [-30:30]\nset xrange [-30:30]\nset xlabel 'x'\nset ylabel 'y'\nset isosamples 500,500\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nplot 1/0\n";
     ui->solve->setEnabled(true);
 }

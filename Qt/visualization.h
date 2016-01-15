@@ -24,6 +24,7 @@ private:
     QtGnuplotInstance *instance;
     QtGnuplotInstance *instance2;
     QtGnuplotInstance *finalInstance;
+    QString plotSolutions(QStringList & solutions);
     void findMinAndMaxXandY(QStringList & solutions,
                             double & xMin, double & xMax,
                             double & yMin, double & yMax);

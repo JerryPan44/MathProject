@@ -25,14 +25,14 @@ void Solution::PrintSolution(ofstream & file)							//Print y, x, multiplicity
     {
         for(int i = 0 ; i < this->lastSet + 1; i++)
         {
-            file << this->y << " ";
-            file << this->x[i] << endl;
+            file << this->x[i] << " ";
+            file << this->y << " 0" << endl;
         }
     }
     else
     {
-        file << this->y << " ";
-        file << this->x[0] << endl;
+        file << this->x[0] << " ";
+        file << this->y << " 0" << endl;
     }
 
 }

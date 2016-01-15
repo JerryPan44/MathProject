@@ -200,7 +200,7 @@ bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pr
             double res2 = Bp2->backSubstitute(sol->getX(), sol->getY());			//Compute the value of the polynomial Bp2
             if(abs(res1) < ERROR_MARGIN && abs(res2) < ERROR_MARGIN)					//Are the values over 10^-6
             {
-                solutionsTxt << sol->getY() << " " << sol->getX() << endl;
+                solutionsTxt << sol->getX() << " " << sol->getY() << ""<< endl;
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
             }
             else
@@ -214,7 +214,7 @@ bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pr
                     double res2 = Bp2->backSubstitute(sol->getXat(j), sol->getY());			//Compute the value of the polynomial Bp2
                     if(abs(res1) < ERROR_MARGIN && abs(res2) < ERROR_MARGIN)					//Are the values over 10^-6
                     {
-                        solutionsTxt << sol->getY() << " " << sol->getXat(j) << endl;
+                        solutionsTxt << sol->getXat(j) << " " << sol->getY() << " 0"<< endl;
                         cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getXat(j)<<" ACCEPTED"<<endl;
                     }
                     else
@@ -251,7 +251,7 @@ bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pr
                 }
                 if(!flag)
                 {
-                    solutionsTxt << sol->getY() << " " << sol->getX() << endl;
+                    solutionsTxt << sol->getX() << " " << sol->getY() << " 0"<< endl;
                 }
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
             }
@@ -267,16 +267,19 @@ bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pr
                     if(abs(res1) < ERROR_MARGIN && abs(res2) < ERROR_MARGIN)					//Are the values over 10^-6
                     {
                         bool flag = false;
+                        int pos;
                         for (int i = 0; i < oldNumSols; ++i){
                             Solution * oldSol = PS->getSolution(i);
                             if(oldSol->compareSolutions(sol->getXat(j), sol->getY()))
                             {
-                                solutionsTxt << sol->getY() << " " << sol->getXat(j) << endl;
+                                pos = j;
+                                flag = true;
+                                break;
                             }
                         }
                         if(!flag)
                         {
-                            solutionsTxt << sol->getY() << " " << sol->getX() << endl;
+                            solutionsTxt << " " << sol->getXat(pos) << sol->getY() << " 0"<< endl;
                         }
                         cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getXat(j)<<" ACCEPTED"<<endl;
                     }
