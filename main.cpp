@@ -109,15 +109,15 @@ void solveProblem(char * filename, int d1, int d2,int B, bool fromPoints)
     {
     	MatrixXd pointsMatrix, pointsMatrix2;
     	Parser::readPoints(pointsMatrix, pointsMatrix2);
-//    	cout<<"Points 1 :"<<endl;
-//    	cout<<pointsMatrix<<endl;
-//    	cout<<"Points 2 :"<<endl;
-//    	cout<<pointsMatrix2<<endl;
+    	cout<<"Points 1 :"<<endl;
+    	cout<<pointsMatrix<<endl;
+    	cout<<"Points 2 :"<<endl;
+    	cout<<pointsMatrix2<<endl;
     	ofstream equationsTxt;
         equationsTxt.open("InterpolationEquations.txt");
         Interpolation interpolation(d1, pointsMatrix), interpolation2(d2 , pointsMatrix2);
     	Bp1 = interpolation.find(equationsTxt);
-    	Bp2 = interpolation2.find(equationsTxt);
+        Bp2 = interpolation2.find(equationsTxt);
         if(Bp1 == NULL || Bp2 == NULL) {
             cout << "Error in interpolation" << endl;
             exit(0);
@@ -164,6 +164,12 @@ void findFullSolutions(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pro
         	double * roots1 = result1->computeAndGetRoots(numRoots1);
         	double * roots2 = result2->computeAndGetRoots(numRoots2);
         	int index = 0;
+//            cout<<"roots 1"<<endl;
+//            for(int i = 0; i < numRoots1; i++)
+//                cout<< roots1[i]<<endl;
+//            cout<<"roots 2"<<endl;
+//            for(int i = 0; i < numRoots2; i++)
+//                cout<< roots2[i]<<endl;
         	for(int i = 0; i < numRoots1; i++)
         	{
             	for(int j = 0; j < numRoots2; j++)
@@ -176,7 +182,7 @@ void findFullSolutions(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pro
             	}
         	}
         }
-        sol->PrintSolution();
+//        sol->PrintSolution();
     }
 }
 
@@ -200,7 +206,7 @@ bool backSubstituteSols(BivariatePolynomial * Bp1, BivariatePolynomial * Bp2, Pr
             double res2 = Bp2->backSubstitute(sol->getX(), sol->getY());			//Compute the value of the polynomial Bp2
             if(abs(res1) < ERROR_MARGIN && abs(res2) < ERROR_MARGIN)					//Are the values over 10^-6
             {
-                solutionsTxt << sol->getX() << " " << sol->getY() << ""<< endl;
+                solutionsTxt << sol->getX() << " " << sol->getY() << " 0"<< endl;
                 cout<<endl<<"SOLUTION : y = "<<sol->getY()<<" x = "<<sol->getX()<<" ACCEPTED"<<endl;
             }
             else

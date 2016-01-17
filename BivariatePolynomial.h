@@ -37,7 +37,7 @@ public:
     void ParsePolynomialBody(int & i, char * polstr, char first, char second,int & firstCoord, int & secondCoord, int & choice , int coef);
     double backSubstitute(double x, double y);
     Polynomial * backSubstitute(double , char);
-    double exp(double num, double power);
+    double exp(double num, int power);
 
 };
 

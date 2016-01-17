@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>110</y>
+      <y>130</y>
       <width>481</width>
       <height>151</height>
      </rect>
@@ -41,9 +41,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>320</y>
-      <width>721</width>
-      <height>321</height>
+      <y>480</y>
+      <width>971</width>
+      <height>261</height>
      </rect>
     </property>
    </widget>
@@ -63,8 +63,8 @@
    <widget class="QPushButton" name="solve">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>290</y>
+      <x>380</x>
+      <y>420</y>
       <width>211</width>
       <height>23</height>
      </rect>
@@ -115,8 +115,8 @@
    <widget class="QPushButton" name="InsertPoints">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>60</y>
+      <x>580</x>
+      <y>80</y>
       <width>121</width>
       <height>23</height>
      </rect>
@@ -151,9 +151,9 @@
    <widget class="QSpinBox" name="d1Box">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>100</y>
-      <width>41</width>
+      <x>330</x>
+      <y>350</y>
+      <width>91</width>
       <height>24</height>
      </rect>
     </property>
@@ -161,9 +161,9 @@
    <widget class="QSpinBox" name="d2Box">
     <property name="geometry">
      <rect>
-      <x>810</x>
-      <y>100</y>
-      <width>48</width>
+      <x>520</x>
+      <y>350</y>
+      <width>91</width>
       <height>24</height>
      </rect>
     </property>
@@ -171,27 +171,27 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>100</y>
-      <width>31</width>
+      <x>330</x>
+      <y>320</y>
+      <width>81</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>d1</string>
+     <string>degree 1</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>100</y>
-      <width>31</width>
+      <x>520</x>
+      <y>320</y>
+      <width>71</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>d2</string>
+     <string>degree 2</string>
     </property>
    </widget>
    <widget class="QTextBrowser" name="points2Txt">
@@ -207,8 +207,8 @@
    <widget class="QPushButton" name="InsertPoints2">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>60</y>
+      <x>790</x>
+      <y>90</y>
       <width>131</width>
       <height>23</height>
      </rect>

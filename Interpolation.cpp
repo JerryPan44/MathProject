@@ -92,33 +92,53 @@ BivariatePolynomial* Interpolation::find(ofstream & equationsTxt)
 	if(this->Check_k()!=0){
 		BivariatePolynomial* Bp;
 		this->ComputeM();
+		cout << "M is : "<<endl;
+		cout << M << endl;
 		FullPivLU<MatrixXd> lu_decomp(M);
 		rank=lu_decomp.rank();
-		cout<<"The system of equations is well-constrained."<<endl;
+//		cout<<"The system of equations is well-constrained."<<endl;
 		//cout << "The rank of M is " << rank << endl;
 		if(rank==k){
 			MatrixXd ker = M.fullPivLu().kernel();
 			double t=ker(k);
 			ker=ker/t;
-			//cout << "The kernel of M is "<< endl << ker << endl;
+			cout << "The kernel of M is "<< endl << ker << endl;
 			int count=0;
 			this->P[0][0] = ker(0);
 			int a,b,sum=0;
 			a=sum;
+			cout<< "Polynomial : ";
 			while(count!=k+1){
 				b=sum-a;
 				t=ker(count);
-				this->P[a][b]=t;
+				this->P[b][a]=t;
 				if(t>0.0 && count>0){
 					equationsTxt<<"+";
+					cout<<"+";
 				}
-				if(count>0) equationsTxt<<"";
+				if(count>0) {
+					equationsTxt<<"";
+					cout<<"";
+				}
 				if(t!=0.0){
 					equationsTxt<<t;
-				if(a==1) equationsTxt<<"*y";
-				if(b==1) equationsTxt<<"*x";
-				if(a>1) equationsTxt<<"*y^"<<a;
-				if(b>1) equationsTxt<<"*x^"<<b;
+					cout<<t;
+				if(a==1) {
+					equationsTxt<<"*x";
+					cout<<"*x";
+				}
+				if(b==1){
+					equationsTxt<<"*y";
+					cout<<"*y";
+				}
+				if(a>1) {
+					equationsTxt<<"*x^"<<a;
+					cout<<"*x^"<<a;
+				}
+				if(b>1){
+					equationsTxt<<"*y^"<<b;
+					cout<<"*y^"<<b;
+				}
 			}
 			count++;
 			if(b==sum){
@@ -128,7 +148,7 @@ BivariatePolynomial* Interpolation::find(ofstream & equationsTxt)
 			else a--;
 		}
 			equationsTxt<<endl;
-		//cout<<P<<endl;
+			cout<<endl;
 			Bp = new BivariatePolynomial(deg,P);
 		}
 		else {

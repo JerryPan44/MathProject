@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Polynomial.h"
 #include <cmath>
+#include <assert.h>
 #include "SylvesterPolynomial.h"
 #include "eigen/Eigen/Dense"
 #include "eigen/Eigen/Core"
@@ -187,6 +188,10 @@ double * Polynomial::computeAndGetRoots(int & numOfRoots)
 {
 	MatrixXd companion = MatrixXd::Zero(this->degree, this->degree);
 	double temp[this->degree];
+//    cout<<"***polynomial***"<<endl;
+//    this->Print();
+//    cout<<"******"<<endl;
+    assert(this->matrixPolynomial[this->degree] != 0);
 	for(int i =0; i < this->degree; i++)
 	{
 		temp[i] = this->matrixPolynomial[i]/this->matrixPolynomial[this->degree];
@@ -203,7 +208,10 @@ double * Polynomial::computeAndGetRoots(int & numOfRoots)
     MatrixXcd eivals = es.eigenvalues();				//Eigenvalues
     double * roots;
     numOfRoots = 0;
-	for(int i =0; i < eivals.rows(); i++)
+//    cout<<"*********"<<endl;
+//    cout<<eivals<<endl;
+//    cout<<"*********"<<endl;
+    for(int i =0; i < eivals.rows(); i++)
 	{
 		if(abs(eivals(i).imag()) < ERROR_MARGIN)
 		{

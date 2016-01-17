@@ -113,7 +113,7 @@ void Visualization::on_solve_clicked()
     {
         QString program = "../exe";
         QStringList arguments;
-        arguments << "-read" <<"-d1"<<"3"<<"-d2"<<"3"<<"-solve"<<"8";
+        arguments << "-read" <<"-d1"<<ui->d1Box->text()<<"-d2"<<ui->d2Box->text()<<"-solve"<<"8";
         QProcess * executable = new QProcess();
         QString myQString = this->ui->equationsTxt->toPlainText();
         executable->start(program, arguments);
@@ -197,11 +197,11 @@ void Visualization::on_solve_clicked()
 
     QTextStream in(&file);
     QString str = in.readAll();
-    if(str == "")
-    {
-        QMessageBox::critical(this, tr("Error"), tr("The system has no solution or the solutions have been rejected (they are not accurate enough) see the output"));
-        return;
-    }
+//    if(str == "")
+//    {
+//        QMessageBox::critical(this, tr("Error"), tr("The system has no solution or the solutions have been rejected (they are not accurate enough) see the output"));
+//        return;
+//    }
     instance->setWidget(finalWidget);
     finalWidget->show();
     finalWidget->resize(QSize(800,600));
@@ -210,15 +210,35 @@ void Visualization::on_solve_clicked()
     f1 = f1.replace(QString("^"),QString("**"));
     QString f2 = functions.at(1);
     f2 = f2.replace(QString("^"),QString("**"));
-    QStringList solutions = str.split("\n");
     double xMin, xMax, yMin, yMax;
-    findMinAndMaxXandY(solutions, xMin, xMax, yMin, yMax);
+    QString readSolutionsFromFileCommand;
+    if(str != "")
+    {
+        readSolutionsFromFileCommand = ", \'solutions.txt\' with points nocontour pt 7";
+        QStringList solutions = str.split("\n");
+        findMinAndMaxXandY(solutions, xMin, xMax
+                           , yMin, yMax);
+    }
+    else
+    {
+        readSolutionsFromFileCommand = "";
+        xMin = -100;
+        xMax = 100;
+        yMin = -100;
+        yMax = 100;
+    }
     //*instance <<\
       //           "set border linewidth 1.5\nset style line 2 lc rgb \'#dd181f\' lt 1 lw 2 pt 7\n";
     //*instance << "set tics scale 0.75\nset xtics 1\nset ytics 1\nset yrange [-10:10]\nset xlabel 'x'\nset ylabel 'y'\nset zeroaxis\nplot \"<echo '1 2'\" notitle\n";
+//    *instance <<\
+//    "set yrange ["+QString::number(yMin-500)+":"+QString::number(yMax+500)+"]\nset xrange["+QString::number(xMin-500)+":"+QString::number(xMax+500)+"]\nset isosamples 500,500\nf(x,y)="+f1+
+//                 "\nf2(x,y)= "+f2+"\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nset table \'functions.dat\'\nsplot f(x,y),f2(x,y)\nunset table\nset yrange ["+QString::number(yMin)+":"+QString::number(yMax)+"]\nset xrange["+QString::number(xMin-500)+":"+QString::number(xMax+500)+"]\nset xrange["+QString::number(xMin)+":"+QString::number(xMax)+"]\nset zeroaxis\nplot \'functions.dat\' with lines, \'solutions.txt\' with points pt 7\n";
+    //*instance <<\
+      //           "set yrange ["+QString::number(yMin)+":"+QString::number(yMax)+"]\nset xrange["+QString::number(xMin)+":"+QString::number(xMax)+"]\nset isosamples 500,500\nf(x,y)="+f1+
+        //                          "\nf2(x,y)="+f2+"\nset contour base\nset cntrparam levels discrete 0\nunset key\nset view map\nsplot \'test\' with points nocontour pointtype 7\n";
     *instance <<\
-    "set yrange ["+QString::number(yMin)+":"+QString::number(yMax)+"]\nset xrange["+QString::number(xMin)+":"+QString::number(xMax)+"]\nset isosamples 500,500\nf(x,y)="+f1+
-                 "\nf2(x,y)= "+f2+"\nset contour\nset cntrparam levels discrete 0\nset view 0,0\nunset ztics\nunset surface\nset table \'functions.dat\'\nsplot f(x,y),f2(x,y)\nunset table\nset zeroaxis\nplot \'functions.dat\' with lines, \'solutions.txt\' with points pt 7\n";
+                 "set yrange ["+QString::number(yMin)+":"+QString::number(yMax)+"]\nset xrange["+QString::number(xMin)+":"+QString::number(xMax)+"]\nset isosamples 500,500\nf(x,y)="+f1+
+                                           "\nf2(x,y)="+f2+"\nset contour base\nset cntrparam levels discrete 0\nunset key\nset view map\nsplot f(x,y) nosurface,f2(x,y) nosurface"+readSolutionsFromFileCommand+"\n";
 }
 
 QString Visualization::plotSolutions(QStringList & solutions)
@@ -237,6 +257,7 @@ void Visualization::findMinAndMaxXandY(QStringList & solutions,
                         double & xMin, double & xMax,
                         double & yMin, double & yMax)
 {
+
     xMin = solutions.at(0).split(" ").at(0).toDouble();
     xMax = xMin;
     yMin = solutions.at(0).split(" ").at(1).toDouble();

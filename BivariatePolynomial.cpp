@@ -39,11 +39,11 @@ void BivariatePolynomial::InitDegs()							//find polynomial y, x degrees
 void BivariatePolynomial::Print()							//Print polynomial
 {
     cout<<"DEGY : "<<this->degy<<endl<<"DEGX : "<<this->degx<<endl;			//print degree of y, degree of x
-    for(int i=matrixDimension-1;i >= 0;i--)
+    for(int i=0;i < matrixDimension;i++)
     {
-        for (int j = matrixDimension - 1; j >= 0; --j)
+        for (int j = 0; j < matrixDimension; ++j)
         {
-            cout << this->MatrixRepresentation[i][j]<<" ";
+            cout << this->MatrixRepresentation[j][i]<<" ";
         }
         cout<<endl;
     }
@@ -232,7 +232,7 @@ BivariatePolynomial::~BivariatePolynomial()
     delete []this->MatrixRepresentation;
 }
 
-double BivariatePolynomial::exp(double num, double power)				//compute (num)^(power)
+double BivariatePolynomial::exp(double num, int power)				//compute (num)^(power)
 {
     if(power == 0)
         return 1;
@@ -258,7 +258,10 @@ double BivariatePolynomial::backSubstitute(double x, double y)				//substitude x
 Polynomial * BivariatePolynomial::backSubstitute(double xy, char hiddenVar)				//substitude x,y in polynomial
 {
 	int size, hiddenSize;
-	if(hiddenVar == 'x')
+//    cout<<"bivariate"<<endl;
+//    this->Print();
+//    cout<<endl;
+    if(hiddenVar == 'x')
 	{
 		size = this->degy + 1;
 		hiddenSize = this->degx + 1;
@@ -269,7 +272,7 @@ Polynomial * BivariatePolynomial::backSubstitute(double xy, char hiddenVar)				/
 		hiddenSize = this->degy + 1;
 	}
 	double matrix[size];
-	int sum = 0;
+	double sum = 0;
     for (int i = 0; i < size; ++i) {
         sum = 0;
         for (int j = 0; j < hiddenSize; ++j) {
@@ -279,9 +282,12 @@ Polynomial * BivariatePolynomial::backSubstitute(double xy, char hiddenVar)				/
         	}
         	else
         	{
+//                cout<<sum<<" + "<<this->MatrixRepresentation[j][i]<<" * "<<exp(xy,j) <<" = ";
         		sum += this->MatrixRepresentation[j][i] * exp(xy, j);
-        	}
+//                cout<<sum<<endl;
+            }
         }
+//        cout<<endl;
         matrix[i] += sum;
     }
 	Polynomial * retPol = new Polynomial(size - 1, matrix);

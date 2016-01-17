@@ -80,6 +80,7 @@ bool ProblemSolver::Solve()
         return this->solveStandardEigenProblem();			//Solve with the standard eigenproblem method
     else
         return this->solveGeneralizedEigenProblem();			//Solve with the generalised eigenproblem method
+
 }
 
 bool ProblemSolver::solveStandardEigenProblem()				//Solve with the standard eigenproblem method
@@ -105,6 +106,7 @@ bool ProblemSolver::solveStandardEigenProblem()				//Solve with the standard eig
         else
             this->Solutions[i] = new Solution(eivals(i).real(),eivecs(eivecs.rows() - 2,i).real()/eivecs(eivecs.rows() - 1,i).real(),
                                               multiplicity[i]);	//add solutions
+//        this->Solutions[i]->PrintSolution();
     }
     return true;
 }
@@ -175,7 +177,8 @@ bool ProblemSolver::solveGeneralizedEigenProblem()					//Solve with the genralis
                                           -(Eivals(i, 0)/Eivals(i, 2)), multiplicity[i]);	//add solutions
         else
             this->Solutions[i] = new Solution(-(Eivals(i, 0)/Eivals(i, 2)), Eivecs(this->degree * dimensionM - 2,i)/Eivecs(degree * dimensionM - 1,i),
-                                              multiplicity[i]);	//add solutions
+                                              multiplicity[i]);	//add solutions'
+//        this->Solutions[i]->PrintSolution();
     }
     return true;
 }
