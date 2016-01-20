@@ -15,7 +15,7 @@ void Parser:: readInput(char filename[], char*& polynomial1, char*& polynomial2)
         Parser::readFromFile(filename, polynomial1, polynomial2);       			//else read from file
 }
 
-void Parser::readPoints(MatrixXd & pointsMatrix, MatrixXd & pointsMatrix2)
+void Parser::readPoints(MatrixXd & pointsMatrix, MatrixXd & pointsMatrix2, istream & input)
 {
 	string points;
 	std::vector <string> points1;

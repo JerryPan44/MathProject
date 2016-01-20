@@ -9,7 +9,7 @@ class PolynomialTests : public ::testing::Test
 protected:
     Polynomial * Pol, * Pol2;
     virtual void SetUp() {
-        int p[3];
+        double p[3];
         p[0] = 5;
         p[1] = 3;
         p[2] = 2;
@@ -26,7 +26,7 @@ protected:
 TEST_F(PolynomialTests, testPowerUp1)
 {
     Pol->powerUp(2);
-    int * pol = Pol->getPolynomial();
+    double * pol = Pol->getPolynomial();
     EXPECT_EQ(4, Pol->getDegree());
     EXPECT_EQ(4, pol[4]);
     EXPECT_EQ(12, pol[3]);
@@ -39,7 +39,7 @@ TEST_F(PolynomialTests, testPowerUp1)
 TEST_F(PolynomialTests, testPowerUp2)
 {
     Pol->powerUp(3);
-    int * pol = Pol->getPolynomial();
+    double * pol = Pol->getPolynomial();
     EXPECT_EQ(6, Pol->getDegree());
     EXPECT_EQ(8, pol[6]);
 }
@@ -50,7 +50,7 @@ TEST_F(PolynomialTests, testMultiplyPolynomials)
     Polynomial * result;
     Pol->multiplyPolynomials(Pol, Pol2, result);
     EXPECT_EQ(4, result->getDegree());
-    int  * p = result->getPolynomial();
+    double  * p = result->getPolynomial();
     EXPECT_EQ(6, p[4]);
     EXPECT_EQ(17, p[3]);
     EXPECT_EQ(31, p[2]);
@@ -74,11 +74,11 @@ TEST_F(PolynomialTests, testMultiplyPolynomials)
 TEST_F(PolynomialTests, testChangeOfVariable)
 {
     Polynomial * result;
-    int testM[3][3];
+    double testM[3][3];
     Polynomial ** p1, **p2;
     p1 = new Polynomial*[2];
     Polynomial ** powerUp1;         //matrix with all the powers of t1*z+t2
-    int p[2];
+    double p[2];
     p[0] = 2;
     p[1] = 3;
     SylvesterMatrix::initPowerUps(powerUp1, p, 3, 2);
@@ -87,7 +87,7 @@ TEST_F(PolynomialTests, testChangeOfVariable)
     Polynomial ** powerUp2;
     SylvesterMatrix::initPowerUps(powerUp2, p, 3, 2);
     Pol->changeOfVariable(powerUp1, powerUp2, 2);
-    int * ret = Pol->getPolynomial();
+    double * ret = Pol->getPolynomial();
     EXPECT_EQ(71, ret[0]);
     EXPECT_EQ(195, ret[1]);
     EXPECT_EQ(134, ret[2]);

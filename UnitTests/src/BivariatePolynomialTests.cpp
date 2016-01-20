@@ -12,9 +12,9 @@ protected:
         char p2[20];
         strcpy(p2, "3+4*x^2*y^2+2*x*y");
         Bp1 = new BivariatePolynomial(p1, 2);
-        //Bp1->Print();
+//        Bp1->Print();
         Bp2 = new BivariatePolynomial(p2, 4);
-        //Bp2->Print();
+//        Bp2->Print();
     }
 };
 
@@ -22,9 +22,9 @@ protected:
 
 TEST_F(BivariatePolynomialTests, TestBackSubstitute1)
 {
-    double x = Bp1->backSubstitute(2, 1);
+    double x = Bp1->backSubstituteXandY(2, 1);
     EXPECT_EQ(20, x);
-    x = Bp2->backSubstitute(3, 2);
+    x = Bp2->backSubstituteXandY(3, 2);
     EXPECT_EQ(159, x);
 }
 
@@ -37,8 +37,15 @@ TEST_F(BivariatePolynomialTests, TestBackSubstitute2)
     Bp1 = new BivariatePolynomial(p1, 2);
     Bp2 = new BivariatePolynomial(p2, 3);
     Bp1->Print();
-    double x = Bp1->backSubstitute(0, -1);
+    double x = Bp1->backSubstituteXandY(0, -1);
     EXPECT_EQ(0, x);
-    x = Bp2->backSubstitute(0, -1);
+    x = Bp2->backSubstituteXandY(0, -1);
     EXPECT_EQ(0, x);
+}
+TEST_F(BivariatePolynomialTests, TestBackSubstitute3)
+{
+  	int i=2;
+	char a[]="2.73333333+2.25*x+0.50*y-4.8333333*x^2+0.100*y^2";
+	BivariatePolynomial* Bp1 = new BivariatePolynomial(a,i);
+	Bp1->Print();
 }

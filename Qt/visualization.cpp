@@ -109,7 +109,7 @@ void Visualization::on_fromPoints_clicked()
 
 void Visualization::on_solve_clicked()
 {
-    if(ui->readFromFile->isChecked())
+    if(ui->readFromFile->isChecked())   //from file with equations
     {
         QString program = "../exe";
         QStringList arguments;
@@ -128,7 +128,7 @@ void Visualization::on_solve_clicked()
             ui->outputTxt->setText(QString(executable->readAllStandardOutput()) + QString(executable->readAllStandardError()));
         executable->close();
     }
-    if(ui->fromPoints->isChecked())
+    if(ui->fromPoints->isChecked()) //from points logic
     {
         QString program = "../exe";
         QStringList arguments;
@@ -139,6 +139,20 @@ void Visualization::on_solve_clicked()
             QMessageBox messageBox;
             messageBox.critical(0,"Error","d1 and d2 must be positive!");
             messageBox.setFixedSize(500,200);
+        }
+        if((d1+1)*(d1+2)/2 -1 != this->ui->pointsTxt->toPlainText().split("\n").count()){
+            QMessageBox messageBox;
+            messageBox.critical(0,"Error","Not enough points selected or too many points selected for given degree degree should be : "
+                                + QString::number(this->ui->pointsTxt->toPlainText().split("\n").count()));
+            messageBox.setFixedSize(500,200);
+            return;
+        }
+        if((d2+1)*(d2+2)/2 -1 != this->ui->pointsTxt->toPlainText().split("\n").count()){
+            QMessageBox messageBox;
+            messageBox.critical(0,"Error","Not enough points selected or too many points selected for given degree degree should be : "
+                                + QString::number(this->ui->points2Txt->toPlainText().split("\n").count()));
+            messageBox.setFixedSize(500,200);
+            return;
         }
         arguments << "-points" <<"-d1"<<ui->d1Box->text()<<"-d2"<<ui->d2Box->text()<<"-solve"<<"8";
         QProcess * executable = new QProcess();

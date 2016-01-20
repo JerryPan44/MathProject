@@ -97,7 +97,8 @@ void BivariatePolynomial::Parse(char polstr[])
         perror("Matrix is null");							//Empty Matrix
         return;
     }
-    int col=0,row=0,coef=1,j=0;
+    int col=0,row=0,j=0;
+    double coef = 1.0;
     bool isPositive = true;
 
     if(polstr[0] == '-') {                              				//zero power coeficient case
@@ -105,9 +106,9 @@ void BivariatePolynomial::Parse(char polstr[])
         j++;
     }
     if(isPositive)
-        this->MatrixRepresentation[0][0] = getCoefFromPolynomial(j, polstr);
+        this->MatrixRepresentation[0][0] = getDoubleCoefFromPolynomial(j, polstr);
     else
-        this->MatrixRepresentation[0][0] = -getCoefFromPolynomial(j, polstr);
+        this->MatrixRepresentation[0][0] = -getDoubleCoefFromPolynomial(j, polstr);
 
     int choice = 0;
     int i = j;
@@ -117,7 +118,7 @@ void BivariatePolynomial::Parse(char polstr[])
         if (polstr[i] == '+' || polstr[i] == '-') {
             isPositive = polstr[i] == '+' ? true : false;           			//find if coef is positive or negative
             i++;
-            coef = getCoefFromPolynomial(i, polstr);    				//reads the coeficient
+            coef = getDoubleCoefFromPolynomial(i, polstr);    				//reads the coeficient
             choice = 0;
             ParsePolynomialBody(i, polstr, 'x', 'y', col, row, choice, coef);           //parse either with *x first
             ParsePolynomialBody(i, polstr, 'y', 'x', row, col, choice, coef);           //or with *y first
@@ -135,12 +136,12 @@ void BivariatePolynomial::Parse(char polstr[])
 
 }
 
-void BivariatePolynomial::ParsePolynomialBody(int & i, char * polstr, char first, char second, int & firstCoord, int & secondCoord, int & choice, int coef)
+void BivariatePolynomial::ParsePolynomialBody(int & i, char * polstr, char first, char second, int & firstCoord, int & secondCoord, int & choice, double coef)
 											//parsing method
 {
     if(choice == 1)									//if you chose another method before that return
         return;
-    if(polstr[i + 1] == second || (polstr[i + 2] == second && coef == 1))		//case we arent in the correct call
+    if(polstr[i + 1] == second || (polstr[i + 2] == second && coef == 1.0))		//case we arent in the correct call
         return;
 
     if (polstr[i + 1] == '*' || coef == 1) {
@@ -151,13 +152,13 @@ void BivariatePolynomial::ParsePolynomialBody(int & i, char * polstr, char first
             if (polstr[i + 3] == '^') {
                 if(!consume(polstr, i, 4))
                     return;								//no of chars consumed
-                firstCoord = getCoefFromPolynomial(i, polstr);
+                firstCoord = getIntCoefFromPolynomial(i, polstr);
                 if (polstr[i + 1] == '*') {
                     if (polstr[i + 2] == second) {
                         if (polstr[i + 3] == '^') {
                             if(!consume(polstr, i, 4))
                                 return;
-                            secondCoord = getCoefFromPolynomial(i, polstr);
+                            secondCoord = getIntCoefFromPolynomial(i, polstr);
                         }
                         else
                         {
@@ -177,7 +178,7 @@ void BivariatePolynomial::ParsePolynomialBody(int & i, char * polstr, char first
                         if (polstr[i + 2] == '^') {
                             if(!consume(polstr, i, 3))
                                 return;
-                            secondCoord = getCoefFromPolynomial(i, polstr);		//no of chars consumed
+                            secondCoord = getIntCoefFromPolynomial(i, polstr);		//no of chars consumed
                         }
                         else
                         {
@@ -202,7 +203,7 @@ bool BivariatePolynomial::consume(char * str, int & pos, int numChars)
     return true;
 }
 
-int BivariatePolynomial::getCoefFromPolynomial(int & pos, char * polstr)
+int BivariatePolynomial::getIntCoefFromPolynomial(int & pos, char * polstr)
 {
     int count = 0;
     if(!isdigit(polstr[pos]))
@@ -214,6 +215,7 @@ int BivariatePolynomial::getCoefFromPolynomial(int & pos, char * polstr)
     char * strCoef;
     while (isdigit(polstr[pos + count])) {
         count++;
+
     }
     strCoef = new char[count+1];
     strCoef[count] = '\0';
@@ -227,6 +229,45 @@ int BivariatePolynomial::getCoefFromPolynomial(int & pos, char * polstr)
     delete []strCoef;
     return k;
 }
+
+double BivariatePolynomial::getDoubleCoefFromPolynomial(int & pos, char * polstr)
+{
+    int count = 0;
+    if(!isdigit(polstr[pos]))
+    {
+        pos += count - 1;
+        return 1;									//if no digit return 1
+    }
+
+    char * strCoef;
+    while (isdigit(polstr[pos + count]) || polstr[pos + count] == '.') {
+        count++;
+        if(polstr[pos + count] == 'e') {
+            count++;
+            if (polstr[pos + count] == '-' ||
+                polstr[pos + count] == '+')
+                count++;
+        }
+    }
+    strCoef = new char[count+1];
+    strCoef[count] = '\0';
+    count = 0;
+    while (isdigit(polstr[pos + count]) || polstr[pos + count] == '.') {						//else read the digits one by one and return them as an int
+        strCoef[count] = polstr[pos + count];
+        count++;
+        if(polstr[pos + count] == 'e') {
+            count++;
+            if (polstr[pos + count] == '-' ||
+                polstr[pos + count] == '+')
+                count++;
+        }
+    }
+    pos +=count-1;
+    double k = atof(strCoef);
+    delete []strCoef;
+    return k;
+}
+
 BivariatePolynomial::~BivariatePolynomial()
 {
     delete []this->MatrixRepresentation;
@@ -243,7 +284,7 @@ double BivariatePolynomial::exp(double num, int power)				//compute (num)^(power
     return num;
 }
 
-double BivariatePolynomial::backSubstitute(double x, double y)				//substitude x,y in polynomial
+double BivariatePolynomial::backSubstituteXandY(double x, double y)				//substitude x,y in polynomial
 {
     double sum = 0;
     for (int i = 0; i < this->degy + 1; ++i) {

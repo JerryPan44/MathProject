@@ -34,11 +34,12 @@ public:
     void Print();                                               //print contents
     ~BivariatePolynomial();
     int getCoefFromPolynomial(int & pos, char * polstr);
-    void ParsePolynomialBody(int & i, char * polstr, char first, char second,int & firstCoord, int & secondCoord, int & choice , int coef);
-    double backSubstitute(double x, double y);
+    void ParsePolynomialBody(int & i, char * polstr, char first, char second,int & firstCoord, int & secondCoord, int & choice , double coef);
+    double backSubstituteXandY(double x, double y);
     Polynomial * backSubstitute(double , char);
     double exp(double num, int power);
-
+    double getDoubleCoefFromPolynomial(int & pos, char * polstr);
+    int getIntCoefFromPolynomial(int & pos, char * polstr);
 };
 
 #endif

@@ -46,7 +46,7 @@ double Interpolation::entry(uint64_t i, uint64_t a, uint64_t b)
 	return m;
 }
 
-void Interpolation::ComputeM()
+MatrixXd & Interpolation::ComputeM()
 {
 	this->M = MatrixXd(k,k+1);
 	int i,j,a,b,sum,y;
@@ -67,6 +67,7 @@ void Interpolation::ComputeM()
 		}
 		i++;
 	}
+	return this->M;
 }
 
 

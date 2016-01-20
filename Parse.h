@@ -2,6 +2,7 @@
 #include "eigen/Eigen/Core"
 #include "eigen/Eigen/SVD"
 #include "eigen/Eigen/Eigenvalues"
+#include <iostream>
 class Parser{
     static void readFromFile(char filename[], char*& polynomial1, char*& polynomial2);
     static void readFromStdin(char*& polynomial1, char*& polynomial2);
@@ -9,7 +10,7 @@ class Parser{
     static void readData(FILE * input, char*& polynomial1, char*& polynomial2);
     static void readLine(FILE *, char *);
 public:
-    static void readPoints(Eigen::MatrixXd & pointsMatrix, Eigen::MatrixXd & pointsMatrix2);
+    static void readPoints(Eigen::MatrixXd & pointsMatrix, Eigen::MatrixXd & pointsMatrix2, std::istream & input);
     static void readInput(char filename[], char*& polynomial1, char*& polynomial2);
 
 };

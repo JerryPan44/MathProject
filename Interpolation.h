@@ -18,9 +18,17 @@ class Interpolation
 	double** P;
 	int rank;
  public:
+	int getRank()
+	{
+		return rank;
+	}
+	int getK()
+	{
+		return k;
+	}
 	Interpolation(uint64_t, MatrixXd);
 	~Interpolation();
-	void ComputeM();
+	MatrixXd & ComputeM();
 	double entry(uint64_t, uint64_t, uint64_t);
 	int Check_k();
 	double powerOf(double, uint64_t);

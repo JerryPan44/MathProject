@@ -25,12 +25,12 @@ protected:
 };
 TEST_F(SylvesterMatrixTests, testInitPolynomialPower)
 {
-    int p[2];
+    double p[2];
     Polynomial ** powerUp1;         //matrix with all the powers of t1*z+t2
     p[0] = 2;
     p[1] = 3;
     SM->initPowerUps(powerUp1, p, 4, 2);
-    int * powerTest = powerUp1[3]->getPolynomial();
+    double * powerTest = powerUp1[3]->getPolynomial();
     EXPECT_EQ(8, powerTest[0]);
     EXPECT_EQ(36, powerTest[1]);
     EXPECT_EQ(54, powerTest[2]);
