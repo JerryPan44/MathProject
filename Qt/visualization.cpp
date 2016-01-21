@@ -22,7 +22,8 @@ Visualization::Visualization(QWidget *parent) :
     this->widgetPoints2 = new QtGnuplotWidget();
     this->widgetPoints2->installEventFilter(this);
     this->widgetPoints2->setStatusLabelActive(true);
-
+    ui->pointsTxt->setText("");
+    ui->points2Txt->setText("");
     instance = new QtGnuplotInstance();
     instance->setWidget(widgetPoints1);
     ui->selectFile->setEnabled(false);
@@ -56,13 +57,13 @@ bool Visualization::eventFilter(QObject *obj, QEvent *event)
         if (obj == this->widgetPoints1) {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
             if (mouseEvent->button() == Qt::LeftButton) {
-                ui->pointsTxt->append(this->widgetPoints1->getStatusLabel()->text().replace(QRegExp("(, |,  )"), " ").replace(QRegExp("\n "), "\n").replace(0, 1, ""));
+                ui->pointsTxt->append(this->widgetPoints1->getStatusLabel()->text().replace(QRegExp("(, |,  )"), " ").replace(QRegExp("\n "), "\n"));
             }
         }
         if (obj == this->widgetPoints2) {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
             if (mouseEvent->button() == Qt::LeftButton) {
-                ui->points2Txt->append(this->widgetPoints2->getStatusLabel()->text().replace(QRegExp("(, |,  )"), " ").replace(QRegExp("\n "), "\n").replace(0, 1, ""));
+                ui->points2Txt->append(this->widgetPoints2->getStatusLabel()->text().replace(QRegExp("(, |,  )"), " ").replace(QRegExp("\n "), "\n"));
             }
         }
     }

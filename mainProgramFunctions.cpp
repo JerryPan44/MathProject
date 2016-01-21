@@ -12,6 +12,7 @@ void solveGeneratedProblem(int d1, int d2, int B)						//Generate and Solve
     ProblemSolver * PS = new ProblemSolver(SP, B, SP->getDegree());				//create a problem solver class
     PS->Solve();										//solve
 //    backSubstituteSols(Bp1, Bp2, PS);								//replace sols and check if they are indeed sols
+    findFullSolutions(Bp1, Bp2, PS);
     SM->changeOfVariable();									//change of variable logic
     changeOfVariable(Bp1, Bp2, SM, PS, B);
     cleanResources(PS, SM, Bp1, Bp2, SP, m);        						//clean resources

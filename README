@@ -23,8 +23,10 @@ the matrices are printed inverted (the biggest power is in the smallest position
 The project is compiled with terminal command : make
 or cleaned with make clean
 
-and run with command ./exe -read -i InputFile -d1 2 -d2 3 -solve 8
-or  ./exe -generate -d1 2 -d2 2 -solve 8	(1st line the first polynomial 2nd line the second).
+and run with the command ./exe -read -i InputFile -d1 2 -d2 3 -solve 8
+or  ./exe -generate -d1 2 -d2 2 -solve 8
+of ./exe -points -d1 2 -d2 2 -solve 7
+(1st line the first polynomial 2nd line the second).
 //!Important the only thing you have to consider in parsing is that the first number in the polynomial must always be the zero power coefficient
 
 GoogleTest installation:

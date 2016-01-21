@@ -2,7 +2,7 @@
 #include "eigen/Eigen/Dense"
 #include "BivariatePolynomial.h"
 #include <fstream>
-
+#include "ErrorMargin.h"
 using namespace std;
 using namespace Eigen;
 
@@ -102,7 +102,14 @@ BivariatePolynomial* Interpolation::find(ofstream & equationsTxt)
 		if(rank==k){
 			MatrixXd ker = M.fullPivLu().kernel();
 			double t=ker(k);
-			ker=ker/t;
+			int  checkCount = 1;
+			while(abs(t) < ERROR_MARGIN || checkCount >= k)
+			{
+				t = ker(k - checkCount);
+				checkCount++;
+			}
+			if(checkCount <= k)
+				ker=ker/t;
 			cout << "The kernel of M is "<< endl << ker << endl;
 			int count=0;
 			this->P[0][0] = ker(0);
